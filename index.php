@@ -198,7 +198,7 @@ $(function() {
                 term.echo("(no arguments): displays 20 most recent uploaded tracks");
                 term.echo("help: show this menu");
                 term.echo("view: go to the soundcloud page of all the tracks");
-                term.echo("search (search string): searches the tracks with the search string in the title");
+                term.echo("search (search string): searches the tracks with the search string in the title or in the tags");
                 term.echo("");
 			} else if (cmd.split(" ")[1] == 'view') {
 				window.location = "http://soundcloud.com/encoder-logic/tracks";
