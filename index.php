@@ -255,7 +255,7 @@ $(function() {
         greetings: 
             '            >ENCODER LOGIC _   \n\n' +
             '    ++ Official Terminal Server ++\n\n' +
-            'Command Interface: version 1.2\n\nType "help" for commands or type "soundcloud" to skip directly to the music.',
+            'Command Interface: version 1.3\n\nType "help" for commands or type "soundcloud" to skip directly to the music.',
         keypress: function(e) {
         },
         width: 1500,
