@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-commodore64
-===========
-
-Commodore 64 jQuery Terminal Demo
-=======
 # encoderlogic
 A Soundcloud API interface built using JQuery Terminal, modified from the Commodore 64 demo https://github.com/jcubic/commodore64
 
@@ -18,4 +12,3 @@ All of the interface content is stored in the index.php, but the framework is un
 If you are using this, you will need to supply your own Soundcloud API client key and website url or this will not work.
 
 You will also need to find the references to your userid and replace that with your own user id.
->>>>>>> f8ddb747e5c46d10dd2b42adf586e7e0a01fe185
