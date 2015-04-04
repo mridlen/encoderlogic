@@ -86,6 +86,7 @@ a:hover {
 	//declare global variables
 	//queue holds the track_ids that are pending on the playlist
 	var queue = [];
+	var followers_ids = [];
 	
 	//soundcloud user id
 	var soundcloudUserId = 14947567;
@@ -233,7 +234,7 @@ $(function() {
 		}
         if (cmd.split(" ")[0] == 'api') {
 			//this api command is reserved for temporary testing of new features
-			var followers_ids = [];
+			//this is undocumented, so if you have found this command, use at your own risk, because it may break something!
 			for (o = 0; o < 5000; o = o + 50) {
 				term.echo("o = " + o);
 				SC.get("/users/" + soundcloudUserId + "/followers", {limit: 50, offset: o}, function (followers) {
@@ -244,12 +245,12 @@ $(function() {
 						var j = o + i;
 						//term.echo("j = " + j + "; o = " + o + "; i = " + i);
 						followers_ids[j] = followers[i].id;
-						term.echo(followers_ids[j].id);
+						term.echo(followers_ids[j]);
 					}
 				});
 			}
 			for (i = 0; i < followers_ids.length; i++) {
-					term.echo(followers_ids[i]);
+				term.echo(followers_ids[i]);
 			}
         }
 		if (cmd.split(" ")[0] == 'queue') {
