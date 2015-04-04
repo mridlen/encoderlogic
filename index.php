@@ -86,6 +86,9 @@ a:hover {
 	//declare global variables
 	//queue holds the track_ids that are pending on the playlist
 	var queue = [];
+	
+	//soundcloud user id
+	var soundcloudUserId = 14947567;
 
 $(function() {
     $('#term').terminal(function(cmd, term) {
@@ -104,6 +107,7 @@ $(function() {
                     term.echo("track_id: " + track_id + " " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url);
                 });
 			}
+			term.echo("");
 		}
 		//a function to play tracks and work with the queue
 		function playTrack(track_id) {
@@ -150,15 +154,17 @@ $(function() {
 		}
         //command interpreter here
         if (cmd.split(" ")[0] == 'help') {
-            term.echo("\n== Available commands ==\n");
-            term.echo("help - displays this menu");
-			term.echo("about - displays websites, links and information");
-            term.echo("soundcloud - redirect to >ENCODER LOGIC_ Soundcloud");
-            term.echo("follow - follow >ENCODER LOGIC_ on Soundcloud");
-            term.echo("tracks [help] - display latest uploaded tracks");
-			term.echo("play [track id] - play a track (search for the track id using the tracks command)");
-            term.echo("stop - stop currently playing track.\n");
-        }
+            term.echo("\n=== Available commands ===\n");
+            term.echo("help - displays this menu.");
+			term.echo("about - displays websites, links and information.");
+            term.echo("soundcloud - redirect to >ENCODER LOGIC_ Soundcloud.");
+            term.echo("follow - follow >ENCODER LOGIC_ on Soundcloud.");
+            term.echo("tracks [help] - display latest uploaded tracks.");
+			term.echo("play [track id] - play a track (search for the track id using the tracks command).");
+			term.echo("queue [track id] - display the play queue. If the optional track id is specified, it will add the track to the play queue.");
+            term.echo("stop - stop currently playing track.");
+			term.echo("");
+		}
         if (cmd.split(" ")[0] == 'soundcloud') {
             window.location = "http://soundcloud.com/encoder-logic";
         }
@@ -183,6 +189,7 @@ $(function() {
 			term.echo("\tlink: http://soundclick.com/isotopelab");
 			term.echo("Introspective Journeys (symphonic electronic) - Mark's first music project that tended toward symphonic and progressive electronic music. Still plenty of good songs!");
 			term.echo("\tlink: http://www.soundclick.com/introspectivejourneys");
+			term.echo("\tlink: http://introspectivejourneys.bandcamp.com/");
 			term.echo("");
         }
         if (cmd.split(" ")[0] == 'tracks') {
@@ -197,8 +204,7 @@ $(function() {
 				window.location = "http://soundcloud.com/encoder-logic/tracks";
             } else if (cmd.split(" ")[1] == 'search') {
                 term.echo("Searching...");
-                //user id 14947567 = Encoder Logic
-                SC.get("/users/14947567/tracks", {limit: 300}, function(tracks){
+                SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 300}, function(tracks){
                     for (i = 0; i < tracks.length; i++) {
                         if (tracks[i].title.toLowerCase().search(cmd.split(" search ")[1].toLowerCase()) >= 0 || tracks[i].tag_list.toLowerCase().search(cmd.split(" search ")[1].toLowerCase()) >= 0) {
                             term.echo(tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
@@ -207,8 +213,7 @@ $(function() {
                 });
             } else {
                 term.echo("20 most recent tracks:");
-                //user id 14947567 = Encoder Logic
-                SC.get("/users/14947567/tracks", {limit: 20}, function(tracks){
+                SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 20}, function(tracks){
                     for (i = 0; i < tracks.length; i++) {    
                         term.echo(tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
                     }
@@ -217,7 +222,7 @@ $(function() {
         } 
         if (cmd.split(" ")[0] == 'follow') {
             SC.connect(function() {
-                SC.put('/me/followings/14947567');
+                SC.put('/me/followings/' + soundcloudUserId);
             });
         }
 		if (cmd.split(" ")[0] == 'play') {
@@ -231,7 +236,7 @@ $(function() {
 			var followers_ids = [];
 			for (o = 0; o < 5000; o = o + 50) {
 				term.echo("o = " + o);
-				SC.get("/users/14947567/followers", {limit: 50, offset: o}, function (followers) {
+				SC.get("/users/" + soundcloudUserId + "/followers", {limit: 50, offset: o}, function (followers) {
 					for (i = 0; i < followers.length; i++) {
 						term.echo(followers[i].permalink_url);
 						term.echo(followers[i].id);
