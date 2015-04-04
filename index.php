@@ -87,7 +87,14 @@ a:hover {
 	//queue holds the track_ids that are pending on the playlist
 	var queue = [];
 	var followers_ids = [];
-	
+	var currentTrack = {
+		trackId: 0,
+		trackArtist: "",
+		trackName: "",
+		trackDuration: 0
+	};
+	var timeoutValue = [];
+		
 	//soundcloud user id
 	var soundcloudUserId = 14947567;
 
@@ -144,6 +151,7 @@ $(function() {
 							}
                         }
                     });
+					displayTimedComments(track_id);
 
                     //sound.onfinish(function() {
                     //    term.echo("Song finished playing.");
@@ -151,6 +159,31 @@ $(function() {
 				});
 			} else {
 				term.echo("Not a valid number.");
+			}
+		}
+		//output timed comments to screen based on timestamp data
+		function timedComment(iteration, timestamp, username, body) {
+			//iteration is passed to give unique timeouts to each comment
+			timeoutValue[iteration] = setTimeout(function() {
+				term.echo("[" + timestamp + "] " + username + ": " + body);
+			}, timestamp);
+		}
+		function displayTimedComments(track_id) {
+			if (!isNaN(track_id)) {
+				SC.get("/tracks/" + cmd.split(" ")[1] + "/comments", function(comments) {
+					for (i = 0; i < comments.length; i++) {
+						//the purpose of this offset is to make original comments appear first in the order on screen
+						var replyOffset = 0;
+						if (comments[i].body.split("@").length < 2) {
+							replyOffset = comments[i].timestamp -1;
+						} else {
+							replyOffset = comments[i].timestamp;
+						}
+						timedComment (i, replyOffset, comments[i].user.username, comments[i].body);
+					}
+				});
+			} else {
+				term.echo ("Not a number.");
 			}
 		}
         //command interpreter here
