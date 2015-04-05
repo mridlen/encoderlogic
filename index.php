@@ -91,9 +91,15 @@ a:hover {
 		trackId: 0,
 		trackArtist: "",
 		trackName: "",
-		trackDuration: 0
+		trackDuration: 0,
+		startedTimestamp: 0
 	};
 	var timeoutValue = [];
+	
+	//for comment posting
+	var commentTimestamp = 0;
+	var postUrl = "";
+	var bodyString = "";
 		
 	//soundcloud user id
 	var soundcloudUserId = 14947567;
@@ -131,6 +137,13 @@ $(function() {
                     //4) don't impersonate soundcloud
                     SC.get("/tracks/" + track_id, function(track) {
                         term.echo("Now Playing: " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url);
+						
+						//assign the current track variables so that we can reference this later
+						currentTrack['trackId'] = track.id;
+						currentTrack['trackArtist'] = track.user.username;
+						currentTrack['trackName'] = track.title;
+						currentTrack['trackDuration'] = track.duration;
+						currentTrack['startedTimestamp'] = Date.now();
                     });
                     //stops any currently playing track
                     soundManager.stopAll();
@@ -140,8 +153,9 @@ $(function() {
                         onfinish: function() {
                             //I'm going to eventually set up queueing here
                             term.echo("Song finished playing.");
-								term.echo("Playing next track.");
+							
 							if (queue.length > 0) {	
+								term.echo("Playing next track.");
 								playTrack(queue[0]);
 								
 								//remove the track from the queue
@@ -196,6 +210,7 @@ $(function() {
             term.echo("tracks [help] - display latest uploaded tracks.");
 			term.echo("play [track id] - play a track (search for the track id using the tracks command).");
 			term.echo("queue [track id] - display the play queue. If the optional track id is specified, it will add the track to the play queue.");
+			term.echo("comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).");
             term.echo("stop - stop currently playing track.");
 			term.echo("");
 		}
@@ -263,9 +278,50 @@ $(function() {
 			playTrack(cmd.split(" ")[1]);
 		}
 		if (cmd.split(" ")[0] == 'stop') {
+			//stop all sounds playing using soundManager (soundcloud uses this)
             soundManager.stopAll();
+			
+			//stop all timed comments
+			for (i = 0; i < timeoutValue.length; i++)
+			{
+				clearTimeout(timeoutValue[i]);
+			}
 		}
-        if (cmd.split(" ")[0] == 'api') {
+		if(cmd.split(" ")[0] == 'comment') {
+			if(cmd.split(" ").length == 1 || cmd.split(" ")[1] == "help") {
+				term.echo("");
+				term.echo("syntax:");
+				term.echo("comment This track is awesome!!");
+				term.echo("Note: do not enclose your comment in quotes unless you are quoting somebody or for purposes of irony");
+				term.echo("");
+			} else if (currentTrack['trackId'] != 0) {
+				term.echo(cmd.substring(8));
+				SC.connect(function(error) {
+						commentTimestamp = parseInt(Date.now() - currentTrack['startedTimestamp']);
+						postUrl = String('/tracks/' + currentTrack['trackId'] + '/comments');
+						bodyString = String(cmd.substring(8));
+						
+						term.echo("commentTimestamp: " + commentTimestamp);
+						term.echo("postUrl: " + postUrl);
+						term.echo("bodyString: " + bodyString);
+						SC.post(postUrl, {
+							comment: {
+								body: bodyString,
+								timestamp: commentTimestamp
+						    }},
+							function(comment, error) {
+								if(error) {
+									term.echo("Error: " + error.message);
+								}
+							}
+						);
+					if (error) {
+						term.echo("Error: " + error.message);
+					}
+				});
+			}
+		}
+		if (cmd.split(" ")[0] == 'api') {
 			//this api command is reserved for temporary testing of new features
 			//this is undocumented, so if you have found this command, use at your own risk, because it may break something!
 			for (o = 0; o < 5000; o = o + 50) {
