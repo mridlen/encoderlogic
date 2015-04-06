@@ -225,15 +225,19 @@ $(function() {
         //command interpreter here
         if (cmd.split(" ")[0] == 'help') {
             term.echo("\n=== Available commands ===\n");
+			
             term.echo("help - displays this menu.");
 			term.echo("about - displays websites, links and information.");
             term.echo("soundcloud - redirect to >ENCODER LOGIC_ Soundcloud.");
+			term.echo("facebook - redirect to >ENCODER LOGIC_ Facebook page.");
             term.echo("follow - follow >ENCODER LOGIC_ on Soundcloud.");
             term.echo("tracks [help] - display latest uploaded tracks.");
 			term.echo("play [track id] - play a track (search for the track id using the tracks command).");
+            term.echo("stop - stop currently playing track.");
+			term.echo("next - skip current track and play the next song in the queue");
 			term.echo("queue [track id] - display the play queue. If the optional track id is specified, it will add the track to the play queue.");
 			term.echo("comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).");
-            term.echo("stop - stop currently playing track.");
+
 			term.echo("");
 		}
         if (cmd.split(" ")[0] == 'soundcloud') {
@@ -297,7 +301,19 @@ $(function() {
             });
         }
 		if (cmd.split(" ")[0] == 'play') {
-			playTrack(cmd.split(" ")[1]);
+			if (typeof cmd.split(" ")[1] !== 'undefined') {
+				term.echo("debug (play option 1)");
+				playTrack(cmd.split(" ")[1]);
+		} else if (isNaN(cmd.split(" ")[1]) && (typeof cmd.split(" ")[1] !== 'undefined'))  {
+				term.echo("debug (play option 2)");
+				term.echo("Error: track id supplied is not a number");
+			} else if (typeof cmd.split(" ")[1] === 'undefined') {
+				term.echo("debug (play option 3)");
+				if(currentTrack['id'] !== 0) {
+					term.echo("debug (play option 3) track_id !== 0 passed");
+					playTrack(currentTrack['id']);
+				}
+			}
 		}
 		if (cmd.split(" ")[0] == 'stop') {
 			stopTrack();
