@@ -18,12 +18,9 @@ body {
     background-color: #000000;
 }
 .wrapper {
-    position: absolute;
+	position: relative;
     left: 25%;
     margin-left: 0px;
-}
-.wrapper {
-    position: relative;
     background-color: #000000;
 }
 #term {
@@ -94,6 +91,8 @@ a:hover {
 		trackDuration: 0,
 		startedTimestamp: 0
 	};
+	
+	//timeoutValue array has the timeouts for all the comments
 	var timeoutValue = [];
 	
 	//for comment posting
@@ -155,13 +154,7 @@ $(function() {
                             term.echo("Song finished playing.");
 							
 							if (queue.length > 0) {	
-								term.echo("Playing next track.");
-								playTrack(queue[0]);
-								
-								//remove the track from the queue
-								//0 - array element (0 == top of queue)
-								//1 - number of elements to remove
-								queue.splice(0, 1);
+								playNextTrack();
 							}
                         }
                     });
@@ -175,6 +168,17 @@ $(function() {
 				term.echo("Not a valid number.");
 			}
 		}
+		function playNextTrack () {
+			if (queue.length > 0) {
+				term.echo("Playing next track.");
+				playTrack(queue[0]);
+				
+				//remove the track from the queue
+				//0 - array element (0 == top of queue)
+				//1 - number of elements to remove
+				queue.splice(0, 1);
+			}
+		}
 		//output timed comments to screen based on timestamp data
 		function timedComment(iteration, timestamp, username, body) {
 			//iteration is passed to give unique timeouts to each comment
@@ -183,22 +187,40 @@ $(function() {
 			}, timestamp);
 		}
 		function displayTimedComments(track_id) {
+			//uncomment for debugging:
+			//term.echo("track_id: " + track_id);
 			if (!isNaN(track_id)) {
-				SC.get("/tracks/" + cmd.split(" ")[1] + "/comments", function(comments) {
+				SC.get("/tracks/" + track_id + "/comments", function(comments) {
 					for (i = 0; i < comments.length; i++) {
 						//the purpose of this offset is to make original comments appear first in the order on screen
 						var replyOffset = 0;
 						if (comments[i].body.split("@").length < 2) {
-							replyOffset = comments[i].timestamp -1;
-						} else {
 							replyOffset = comments[i].timestamp;
+						} else {
+							replyOffset = comments[i].timestamp - 1;
 						}
-						timedComment (i, replyOffset, comments[i].user.username, comments[i].body);
+						//uncomment for debugging:
+						//term.echo(i + " " + replyOffset + " " + comments[i].user.username + " " + comments[i].body);
+						if (replyOffset > 0) {
+							timedComment (i, replyOffset, comments[i].user.username, comments[i].body);
+						}
 					}
 				});
 			} else {
 				term.echo ("Not a number.");
 			}
+		}
+		function stopTrack(){
+			term.echo("Stopping track.");
+			
+			//stop all timed comments
+			for (i = 0; i < timeoutValue.length; i++)
+			{
+				clearTimeout(timeoutValue[i]);
+			}
+			timeoutValue = [];
+			//stop all sounds playing using soundManager (soundcloud uses this)
+            soundManager.stopAll();
 		}
         //command interpreter here
         if (cmd.split(" ")[0] == 'help') {
@@ -278,14 +300,11 @@ $(function() {
 			playTrack(cmd.split(" ")[1]);
 		}
 		if (cmd.split(" ")[0] == 'stop') {
-			//stop all sounds playing using soundManager (soundcloud uses this)
-            soundManager.stopAll();
-			
-			//stop all timed comments
-			for (i = 0; i < timeoutValue.length; i++)
-			{
-				clearTimeout(timeoutValue[i]);
-			}
+			stopTrack();
+		}
+		if(cmd.split(" ")[0] == 'next') {
+			stopTrack();
+			playNextTrack();
 		}
 		if(cmd.split(" ")[0] == 'comment') {
 			if(cmd.split(" ").length == 1 || cmd.split(" ")[1] == "help") {
