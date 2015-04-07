@@ -304,13 +304,10 @@ $(function() {
 			if (typeof cmd.split(" ")[1] !== 'undefined') {
 				term.echo("debug (play option 1)");
 				playTrack(cmd.split(" ")[1]);
-		} else if (isNaN(cmd.split(" ")[1]) && (typeof cmd.split(" ")[1] !== 'undefined'))  {
-				term.echo("debug (play option 2)");
-				term.echo("Error: track id supplied is not a number");
-			} else if (typeof cmd.split(" ")[1] === 'undefined') {
+            } else if (typeof cmd.split(" ")[1] === 'undefined') {
 				term.echo("debug (play option 3)");
 				if(currentTrack['trackId'] !== 0) {
-					term.echo("debug (play option 3) track_id !== 0 passed");
+					term.echo("debug: track_id !== 0 passed");
                     term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
 					playTrack(currentTrack['trackId']);
 				}
