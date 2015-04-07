@@ -309,9 +309,10 @@ $(function() {
 				term.echo("Error: track id supplied is not a number");
 			} else if (typeof cmd.split(" ")[1] === 'undefined') {
 				term.echo("debug (play option 3)");
-				if(currentTrack['id'] !== 0) {
+				if(currentTrack['trackId'] !== 0) {
 					term.echo("debug (play option 3) track_id !== 0 passed");
-					playTrack(currentTrack['id']);
+                    term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
+					playTrack(currentTrack['trackId']);
 				}
 			}
 		}
