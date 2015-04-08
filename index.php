@@ -72,6 +72,8 @@ a:hover {
       client_id: '8c3cf644ea6051b32f5e612143e203e9',
       redirect_uri: 'http://beta.encoderlogic.com/callback.html'
     });
+    //soundcloud user id (this is associated with the artist, not the end user)
+	var soundcloudUserId = 14947567;
     
     // initiate auth popup
     //SC.connect(function() {
@@ -94,14 +96,15 @@ a:hover {
 	
 	//timeoutValue array has the timeouts for all the comments
 	var timeoutValue = [];
+    
+    //searchTracks array holds the trackIds of the recent search
+    var searchTracks = [];
 	
 	//for comment posting
 	var commentTimestamp = 0;
 	var postUrl = "";
 	var bodyString = "";
 		
-	//soundcloud user id
-	var soundcloudUserId = 14947567;
 
 $(function() {
     $('#term').terminal(function(cmd, term) {
@@ -150,9 +153,9 @@ $(function() {
                     //sound already references the track id when the API function is called, so nothing else to supply it but play()
 					sound.play({
                         onfinish: function() {
-                            //I'm going to eventually set up queueing here
                             term.echo("Song finished playing.");
 							
+                            //play next track in queue
 							if (queue.length > 0) {	
 								playNextTrack();
 							}
@@ -232,7 +235,7 @@ $(function() {
 			term.echo("facebook - redirect to >ENCODER LOGIC_ Facebook page.");
             term.echo("follow - follow >ENCODER LOGIC_ on Soundcloud.");
             term.echo("tracks [help] - display latest uploaded tracks.");
-			term.echo("play [track id] - play a track (search for the track id using the tracks command).");
+			term.echo("play [help] - play a track (search for the track id using the tracks command).");
             term.echo("stop - stop currently playing track.");
 			term.echo("next - skip current track and play the next song in the queue");
 			term.echo("queue [track id] - display the play queue. If the optional track id is specified, it will add the track to the play queue.");
@@ -280,17 +283,23 @@ $(function() {
             } else if (cmd.split(" ")[1] == 'search') {
                 term.echo("Searching...");
                 SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 300}, function(tracks){
+                    //clear searchTracks[]
+                    searchTracks = [];
                     for (i = 0; i < tracks.length; i++) {
                         if (tracks[i].title.toLowerCase().search(cmd.split(" search ")[1].toLowerCase()) >= 0 || tracks[i].tag_list.toLowerCase().search(cmd.split(" search ")[1].toLowerCase()) >= 0) {
-                            term.echo(tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
+                            term.echo((i+1) + ") " + tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
+                            searchTracks[i] = tracks[i].id;
                         }
                     }
                 });
             } else {
                 term.echo("20 most recent tracks:");
                 SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 20}, function(tracks){
+                    //clear searchTracks[]
+                    searchTracks = [];
                     for (i = 0; i < tracks.length; i++) {    
-                        term.echo(tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
+                        term.echo((i+1) + ") " + tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
+                        searchTracks[i] = tracks[i].id;
                     }
                 });
             }
@@ -301,9 +310,37 @@ $(function() {
             });
         }
 		if (cmd.split(" ")[0] == 'play') {
-			if (typeof cmd.split(" ")[1] !== 'undefined') {
-				term.echo("debug (play option 1)");
-				playTrack(cmd.split(" ")[1]);
+            if (cmd.split(" ")[1] == 'help') {
+                term.echo("");
+                term.echo("You can use the play command a couple of different ways");
+                term.echo("First use the tracks command to search for the track you want to play.");
+                term.echo("example output: 1) 197946816 - Encoder Logic - Cloudpusher V0");
+                term.echo("'1' is the quick play id and '197946816' is the track id");
+                term.echo("");
+                term.echo("Supplying a track id:");
+                term.echo("\tplay 103143977");
+                term.echo("Supplying a quick play id:");
+                term.echo("\tplay 2");
+                term.echo("");
+                term.echo("Note: you cannot use the quick play option if you have not used the tracks command first");
+                term.echo("");
+            } else if (cmd.split(" ")[1] == 'id' && typeof cmd.split(" ")[2] !== 'undefined') {
+                //if "track id <id>" is specified, then play the track id
+                //otherwise we will use the quick play id
+                playTrack(cmd.split(" ")[2]);
+			} else if (typeof cmd.split(" ")[1] !== 'undefined') {
+				term.echo("debug (play option 1: quick play)");
+                //our safe zone will be 1-300 for quick play numbers
+                //you will be able to supply a track id using syntax "play id <track id>"
+                if(cmd.split(" ")[1] < 300) {
+                    //play the quick play number
+                    term.echo("quick play id supplied: " + (cmd.split(" ")[1]));
+                    playTrack(searchTracks[(cmd.split(" ")[1] - 1)]);
+                } else {
+                    term.echo("debug (1-300 range exceeded, playing track id instead)");
+                    //play the track id if out of the 1-300 safety range
+                    playTrack(cmd.split(" ")[1]);
+                }
             } else if (typeof cmd.split(" ")[1] === 'undefined') {
 				term.echo("debug (play option 3)");
 				if(currentTrack['trackId'] !== 0) {
@@ -376,7 +413,46 @@ $(function() {
 			}
         }
 		if (cmd.split(" ")[0] == 'queue') {
-			queueTrack(cmd.split(" ")[1]);
+            //queue is exactly like play except that we use the queueTrack instead of playTrack function
+            if (cmd.split(" ")[1] == 'help') {
+                term.echo("");
+                term.echo("You can use the queue command a couple of different ways");
+                term.echo("First use the tracks command to search for the track you want to queue.");
+                term.echo("example output: 1) 197946816 - Encoder Logic - Cloudpusher V0");
+                term.echo("'1' is the quick play id and '197946816' is the track id");
+                term.echo("");
+                term.echo("Supplying a track id:");
+                term.echo("\tqueue 103143977");
+                term.echo("Supplying a quick play id:");
+                term.echo("\tqueue 2");
+                term.echo("");
+                term.echo("Note: you cannot use the quick play option if you have not used the tracks command first");
+                term.echo("");
+            } else if (cmd.split(" ")[1] == 'id' && typeof cmd.split(" ")[2] !== 'undefined') {
+                //if "track id <id>" is specified, then play the track id
+                //otherwise we will use the quick play id
+                queueTrack(cmd.split(" ")[2]);
+			} else if (typeof cmd.split(" ")[1] !== 'undefined') {
+				term.echo("debug (queue option 1: quick play)");
+                //our safe zone will be 1-300 for quick play numbers
+                //you will be able to supply a track id using syntax "play id <track id>"
+                if(cmd.split(" ")[1] < 300) {
+                    //play the quick play number
+                    term.echo("quick play id supplied: " + (cmd.split(" ")[1]));
+                    queueTrack(searchTracks[(cmd.split(" ")[1] - 1)]);
+                } else {
+                    term.echo("debug (1-300 range exceeded, queueing track id instead)");
+                    //play the track id if out of the 1-300 safety range
+                    queueTrack(cmd.split(" ")[1]);
+                }
+            } else if (typeof cmd.split(" ")[1] === 'undefined') {
+				term.echo("debug (queue option 3)");
+				if(currentTrack['trackId'] !== 0) {
+					term.echo("debug: track_id !== 0 passed");
+                    term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
+					queueTrack(currentTrack['trackId']);
+				}
+			}
 		}
 },{
         prompt: 'ENCODER LOGIC >',
