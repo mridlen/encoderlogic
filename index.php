@@ -100,6 +100,9 @@ a:hover {
     //searchTracks array holds the trackIds of the recent search
     var searchTracks = [];
 	
+	//searchArtists array holds the userIds of the recent artist search
+	var searchArtists = [];
+	
 	//for comment posting
 	var commentTimestamp = 0;
 	var postUrl = "";
@@ -138,7 +141,7 @@ $(function() {
                     //3) link to soundcloud
                     //4) don't impersonate soundcloud
                     SC.get("/tracks/" + track_id, function(track) {
-                        term.echo("Now Playing: " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url);
+                        term.echo("Now Playing: " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url + " streamable: " + track.streamable);
 						
 						//assign the current track variables so that we can reference this later
 						currentTrack['trackId'] = track.id;
@@ -452,6 +455,20 @@ $(function() {
                     term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
 					queueTrack(currentTrack['trackId']);
 				}
+			}
+		}
+		if(cmd.split(" ")[0] == 'artist') {
+			if(cmd.split(" ")[1] == 'search') {
+				term.echo("searching for: " + cmd.split(" search ")[1]);
+				SC.get("/users", { limit: 20, q: cmd.split(" search ")[1] }, function(artists) {
+					for(i = 0; i < artists.length; i++) {
+						term.echo((i+1) + ") " + artists[i].username);
+						searchArtists[i] = artists[i].id;
+					}
+				});
+			}
+			if(cmd.split(" ")[1] == 'switch') {
+				soundcloudUserId = searchArtists[cmd.split(" ")[2] - 1];
 			}
 		}
 },{
