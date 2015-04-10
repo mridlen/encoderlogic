@@ -74,6 +74,11 @@ a:hover {
     });
     //soundcloud user id (this is associated with the artist, not the end user)
 	var soundcloudUserId = 14947567;
+    var soundcloudUserName = "Encoder Logic";
+    
+    //boolean loggedIn will return 1 once successfully logged in
+    //by default it is 0
+    var loggedIn = 0;
     
     // initiate auth popup
     //SC.connect(function() {
@@ -81,6 +86,8 @@ a:hover {
     //    alert('Hello, ' + me.username); 
     //  });
     //});
+    
+    
 	
 	//declare global variables
 	//queue holds the track_ids that are pending on the playlist
@@ -111,7 +118,9 @@ a:hover {
 
 $(function() {
     $('#term').terminal(function(cmd, term) {
-		
+		function authorizeSoundcloud() {
+            term.echo( window.SC.storage().getItem('SC.accessToken') );
+        }
 		function queueTrack(track_id) {
 			if (typeof track_id !== 'undefined') {
 				term.echo("Adding track to end of queue: " + track_id);
@@ -228,22 +237,29 @@ $(function() {
 			//stop all sounds playing using soundManager (soundcloud uses this)
             soundManager.stopAll();
 		}
+        
         //command interpreter here
         if (cmd.split(" ")[0] == 'help') {
             term.echo("\n=== Available commands ===\n");
 			
             term.echo("help - displays this menu.");
 			term.echo("about - displays websites, links and information.");
+			term.echo("artist - used for changing the artist page (in case you want some other music than >ENCODER LOGIC_)");
             term.echo("soundcloud - redirect to >ENCODER LOGIC_ Soundcloud.");
 			term.echo("facebook - redirect to >ENCODER LOGIC_ Facebook page.");
-            term.echo("follow - follow >ENCODER LOGIC_ on Soundcloud.");
             term.echo("tracks [help] - display latest uploaded tracks.");
-			term.echo("play [help] - play a track (search for the track id using the tracks command).");
+            term.echo("play [help] - play a track (search for the track id using the tracks command).");
             term.echo("stop - stop currently playing track.");
 			term.echo("next - skip current track and play the next song in the queue");
-			term.echo("queue [track id] - display the play queue. If the optional track id is specified, it will add the track to the play queue.");
-			term.echo("comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).");
-
+			term.echo("queue [help] - display the play queue. (search for the track id using the tracks command).");
+            term.echo("login - prompt for user login via soundcloud connect popup (this enables more commands!)");
+            
+            if (loggedIn == 1) {
+                term.echo("logout - refreshes the page, effectively logging you out");
+                term.echo("whoami - display your username");
+                term.echo("follow - follow the current artist (default: Encoder Logic) on Soundcloud.");
+                term.echo("comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).");
+             }   
 			term.echo("");
 		}
         if (cmd.split(" ")[0] == 'soundcloud') {
@@ -307,10 +323,8 @@ $(function() {
                 });
             }
         } 
-        if (cmd.split(" ")[0] == 'follow') {
-            SC.connect(function() {
-                SC.put('/me/followings/' + soundcloudUserId);
-            });
+        if (cmd.split(" ")[0] == 'follow' && loggedIn == 1) {
+            SC.put('/me/followings/' + soundcloudUserId);
         }
 		if (cmd.split(" ")[0] == 'play') {
             if (cmd.split(" ")[1] == 'help') {
@@ -360,7 +374,7 @@ $(function() {
 			stopTrack();
 			playNextTrack();
 		}
-		if(cmd.split(" ")[0] == 'comment') {
+		if(cmd.split(" ")[0] == 'comment' && loggedIn == 1) {
 			if(cmd.split(" ").length == 1 || cmd.split(" ")[1] == "help") {
 				term.echo("");
 				term.echo("syntax:");
@@ -458,7 +472,15 @@ $(function() {
 			}
 		}
 		if(cmd.split(" ")[0] == 'artist') {
-			if(cmd.split(" ")[1] == 'search') {
+			if (cmd.split(" ")[1] == 'help') {
+				term.echo("");
+				term.echo("Syntax: ");
+				term.echo("artist search <search string> - display a list of artists that match your search parameters");
+				term.echo("\tartist search encoder logic");
+				term.echo("artist switch <quick id> - supply a number associated with the artist search");
+				term.echo("\tartist switch 3");
+				term.echo("");
+			} else if (cmd.split(" ")[1] == 'search') {
 				term.echo("searching for: " + cmd.split(" search ")[1]);
 				SC.get("/users", { limit: 20, q: cmd.split(" search ")[1] }, function(artists) {
 					for(i = 0; i < artists.length; i++) {
@@ -471,6 +493,27 @@ $(function() {
 				soundcloudUserId = searchArtists[cmd.split(" ")[2] - 1];
 			}
 		}
+        if(cmd.split(" ")[0] == 'login') {
+            SC.connect(function() {
+                SC.get("/me", function(me){
+                    if(typeof me.username !== 'undefined') {
+                        term.echo("User: " + me.username);
+                        loggedIn = 1;
+                    } else {
+                        term.echo("Not logged in.");
+                    }
+                });
+            });
+        }
+        if(cmd.split(" ")[0] == 'logout' && loggedIn == 1) {
+            location.reload(true);
+        }
+        if(cmd.split(" ")[0] == 'whoami' && loggedIn == 1) {
+
+            SC.get("/me", function(me){
+                term.echo("User: " + me.username);
+            });
+    }
 },{
         prompt: 'ENCODER LOGIC >',
         greetings: 
