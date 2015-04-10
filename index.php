@@ -76,6 +76,10 @@ a:hover {
 	var soundcloudUserId = 14947567;
     var soundcloudUserName = "Encoder Logic";
     
+    //the client is for the connecting user (the one who is looking at the webpage)
+    var soundcloudUserIdClient = 0;
+    var soundcloudUserNameClient = "anonymous";
+    
     //boolean loggedIn will return 1 once successfully logged in
     //by default it is 0
     var loggedIn = 0;
@@ -244,7 +248,7 @@ $(function() {
 			
             term.echo("help - displays this menu.");
 			term.echo("about - displays websites, links and information.");
-			term.echo("artist - used for changing the artist page (in case you want some other music than >ENCODER LOGIC_)");
+			term.echo("artist [help] - used for changing the artist page (in case you want some other music than >ENCODER LOGIC_)");
             term.echo("soundcloud - redirect to >ENCODER LOGIC_ Soundcloud.");
 			term.echo("facebook - redirect to >ENCODER LOGIC_ Facebook page.");
             term.echo("tracks [help] - display latest uploaded tracks.");
@@ -488,17 +492,35 @@ $(function() {
 						searchArtists[i] = artists[i].id;
 					}
 				});
-			}
-			if(cmd.split(" ")[1] == 'switch') {
+            } else if(cmd.split(" ")[1] == 'switch') {
 				soundcloudUserId = searchArtists[cmd.split(" ")[2] - 1];
-			}
+                SC.get("/users/" + soundcloudUserId, function(user) {
+                    term.echo("Artist: " + user.username);
+                    soundcloudUserName = user.username;
+                    term.set_prompt("[" + soundcloudUserNameClient + "@" + soundcloudUserName + "]>");
+                });
+			} else {
+                //if no arguments are supplied, just display the artist name
+                SC.get("/users/" + soundcloudUserId, function(user) {
+                    term.echo("Artist: " + user.username);
+                });
+            }
 		}
         if(cmd.split(" ")[0] == 'login') {
             SC.connect(function() {
                 SC.get("/me", function(me){
                     if(typeof me.username !== 'undefined') {
+                        SC.get("/users/" + soundcloudUserId, function(user) {
+                            //echo the Artist name, and then set the Artist name
+                            term.echo("Artist: " + user.username);
+                            soundcloudUserName = user.username;
+                        });
+                        //echo the Username, and then set the Username
                         term.echo("User: " + me.username);
+                        soundcloudUserNameClient = me.username;
+                        
                         loggedIn = 1;
+                        term.set_prompt("[" + soundcloudUserNameClient + "@" + soundcloudUserName + "]>");
                     } else {
                         term.echo("Not logged in.");
                     }
@@ -515,11 +537,13 @@ $(function() {
             });
     }
 },{
-        prompt: 'ENCODER LOGIC >',
+        prompt: '[anonymous@Encoder Logic]>',
         greetings: 
             '            >ENCODER LOGIC _   \n\n' +
             '    ++ Official Terminal Server ++\n\n' +
-            'Command Interface: version 1.3\n\nType "help" for commands or type "soundcloud" to skip directly to the music.',
+            'Command Interface: version 1.3\n\n' +
+            'Type "help" for commands or type "soundcloud" to skip directly to the music.\n' +
+            'Type "login" to connect with soundcloud (this enables more commands!)\n\n',
         keypress: function(e) {
         },
         width: 1500,
