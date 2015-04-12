@@ -321,9 +321,9 @@ $(function() {
                 SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 20}, function(tracks){
                     //clear searchTracks[]
                     searchTracks = [];
-					term.echo("[[;blue;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
+					term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
                     for (i = 0; i < tracks.length; i++) {    
-                        term.echo("[[;blue;]" + (i+1) + ")] [[;red;]" + tracks[i].id + "] - [[;yellow;]" + tracks[i].user.username  + "] - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
+                        term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks[i].id + "] - [[;yellow;]" + tracks[i].user.username  + "] - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
                         searchTracks[i] = tracks[i].id;
                     }
                 });
@@ -331,6 +331,13 @@ $(function() {
         } 
         if (cmd.split(" ")[0] == 'follow' && loggedIn == 1) {
             SC.put('/me/followings/' + soundcloudUserId);
+			
+			//this section is not working yet!!
+			//SC.get("/user/" + soundcloudUserIdClient + "/followings/0", function(follows) {
+			//		if(follows.id == soundcloudUserId) {
+			//				term.echo("Current artist successfully followed");
+			//		}
+			//});
         }
 		if (cmd.split(" ")[0] == 'play') {
             if (cmd.split(" ")[1] == 'help') {
@@ -538,7 +545,7 @@ $(function() {
 			SC.put("/me/favorites/" + currentTrack['trackId']);
 			
 			SC.get("/user/" + soundcloudUserIdClient + "/favorites/0", function(likes) {
-					if(likes.id = currentTrack['trackId']) {
+					if(likes.id == currentTrack['trackId']) {
 							term.echo("Current track successfully liked.");
 					}
 			});
