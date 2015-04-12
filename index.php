@@ -321,8 +321,9 @@ $(function() {
                 SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 20}, function(tracks){
                     //clear searchTracks[]
                     searchTracks = [];
+					term.echo("[[;blue;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
                     for (i = 0; i < tracks.length; i++) {    
-                        term.echo((i+1) + ") " + tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
+                        term.echo("[[;blue;]" + (i+1) + ")] [[;red;]" + tracks[i].id + "] - [[;yellow;]" + tracks[i].user.username  + "] - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
                         searchTracks[i] = tracks[i].id;
                     }
                 });
@@ -336,7 +337,8 @@ $(function() {
                 term.echo("");
                 term.echo("You can use the play command a couple of different ways");
                 term.echo("First use the tracks command to search for the track you want to play.");
-                term.echo("example output: 1) 197946816 - Encoder Logic - Cloudpusher V0");
+                term.echo("example output:");
+				term.echo("1) 197946816 - Encoder Logic - Cloudpusher V0");
                 term.echo("'1' is the quick play id and '197946816' is the track id");
                 term.echo("");
                 term.echo("Supplying a track id:");
