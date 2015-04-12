@@ -229,6 +229,82 @@ $(function() {
 				term.echo ("Not a number.");
 			}
 		}
+		function playOrQueue(arg0, arg1, arg2) {
+			if (arg0 == 'queue' && arg1 == 'clear') {
+				//"queue clear" command...
+				//clear out the queue array
+				queue = [];
+				
+				//exit the function early
+				return;
+			}
+			if (arg1 == 'help') {
+                term.echo("");
+                term.echo("You can use the '" + arg0 + "' command a couple of different ways");
+                term.echo("First use the tracks command to search for the track you want to  " + arg0 + " .");
+                term.echo("example output:");
+				term.echo("1) 197946816 - Encoder Logic - Cloudpusher V0");
+                term.echo("'1' is the quick play id and '197946816' is the track id");
+                term.echo("");
+                term.echo("Supplying a track id:");
+                term.echo("\t" + arg0 + " 103143977");
+                term.echo("Supplying a quick play id:");
+                term.echo("\t" + arg0 + " 2");
+				term.echo("Force a track id to be used instead of a quick play id:");
+				term.echo("\t" + arg0 + " id 2");
+				term.echo("(Try it! That " + arg0 + "s the oldest soundcloud track)");
+				//there is one more way to use the queue command vs the play command
+				if (arg0 == 'queue') {
+					term.echo("Clear the " + arg0 + ":");
+					term.echo("\t" + arg0 + " clear");
+				}
+                term.echo("");
+                term.echo("Note:");
+				term.echo("You cannot use the quick play option if you have not used the 'tracks' command first");
+                term.echo("");
+            } else if (arg1 == 'id' && typeof arg2 !== 'undefined') {
+                //if "track id <id>" is specified, then play the track id
+                //otherwise we will use the quick play id
+				if(arg0 == 'play') {
+					playTrack(arg2);
+				} else if (arg0 == 'queue') {
+					queueTrack(arg2);
+				}
+			} else if (typeof arg1 !== 'undefined') {
+				term.echo("Using quick play id...");
+                //our safe zone will be 1-300 for quick play numbers (I eventually plan to move this to a variable that can be easily adjusted)
+                //you will be able to supply a track id using syntax "play id <track id>"
+                if(arg1 < 300) {
+                    //play the quick play number
+                    term.echo("quick play id supplied: " + (arg1));
+					
+					if(arg0 == 'play') {
+						playTrack(searchTracks[(arg1 - 1)]);
+					} else if (arg0 == 'queue') {
+						queueTrack(searchTracks[(arg1 - 1)]);
+					}
+                    
+                } else {
+                    term.echo("1-300 range exceeded, playing track id instead");
+                    //play the track id if out of the 1-300 safety range
+                    if(arg0 == 'play') {
+						playTrack(arg1);
+					} else if (arg0 == 'queue') {
+						queueTrack(arg1);
+					}
+                }
+            } else if (typeof arg1 === 'undefined') {
+					//if this is play, we want to play the stopped track
+					if (arg0 == 'play' && currentTrack['trackId'] !== 0) {
+						term.echo("Playing previously stopped track from beginning.");
+						term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
+						playTrack(currentTrack['trackId']);
+					} else if (arg0 == 'queue') {
+						queueTrack();
+					}
+				
+			}
+		}
 		function stopTrack(){
 			term.echo("Stopping track.");
 			
@@ -340,46 +416,8 @@ $(function() {
 			//});
         }
 		if (cmd.split(" ")[0] == 'play') {
-            if (cmd.split(" ")[1] == 'help') {
-                term.echo("");
-                term.echo("You can use the play command a couple of different ways");
-                term.echo("First use the tracks command to search for the track you want to play.");
-                term.echo("example output:");
-				term.echo("1) 197946816 - Encoder Logic - Cloudpusher V0");
-                term.echo("'1' is the quick play id and '197946816' is the track id");
-                term.echo("");
-                term.echo("Supplying a track id:");
-                term.echo("\tplay 103143977");
-                term.echo("Supplying a quick play id:");
-                term.echo("\tplay 2");
-                term.echo("");
-                term.echo("Note: you cannot use the quick play option if you have not used the tracks command first");
-                term.echo("");
-            } else if (cmd.split(" ")[1] == 'id' && typeof cmd.split(" ")[2] !== 'undefined') {
-                //if "track id <id>" is specified, then play the track id
-                //otherwise we will use the quick play id
-                playTrack(cmd.split(" ")[2]);
-			} else if (typeof cmd.split(" ")[1] !== 'undefined') {
-				term.echo("debug (play option 1: quick play)");
-                //our safe zone will be 1-300 for quick play numbers
-                //you will be able to supply a track id using syntax "play id <track id>"
-                if(cmd.split(" ")[1] < 300) {
-                    //play the quick play number
-                    term.echo("quick play id supplied: " + (cmd.split(" ")[1]));
-                    playTrack(searchTracks[(cmd.split(" ")[1] - 1)]);
-                } else {
-                    term.echo("debug (1-300 range exceeded, playing track id instead)");
-                    //play the track id if out of the 1-300 safety range
-                    playTrack(cmd.split(" ")[1]);
-                }
-            } else if (typeof cmd.split(" ")[1] === 'undefined') {
-				term.echo("debug (play option 3)");
-				if(currentTrack['trackId'] !== 0) {
-					term.echo("debug: track_id !== 0 passed");
-                    term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
-					playTrack(currentTrack['trackId']);
-				}
-			}
+			//"play" is ingeniously supplied in cmd.split(" ")[0] so that what the user typed is actually supplied to the "queue help" or "play help" menu
+            playOrQueue(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" ")[2]);
 		}
 		if (cmd.split(" ")[0] == 'stop') {
 			stopTrack();
@@ -440,45 +478,8 @@ $(function() {
         }
 		if (cmd.split(" ")[0] == 'queue') {
             //queue is exactly like play except that we use the queueTrack instead of playTrack function
-            if (cmd.split(" ")[1] == 'help') {
-                term.echo("");
-                term.echo("You can use the queue command a couple of different ways");
-                term.echo("First use the tracks command to search for the track you want to queue.");
-                term.echo("example output: 1) 197946816 - Encoder Logic - Cloudpusher V0");
-                term.echo("'1' is the quick play id and '197946816' is the track id");
-                term.echo("");
-                term.echo("Supplying a track id:");
-                term.echo("\tqueue 103143977");
-                term.echo("Supplying a quick play id:");
-                term.echo("\tqueue 2");
-                term.echo("");
-                term.echo("Note: you cannot use the quick play option if you have not used the tracks command first");
-                term.echo("");
-            } else if (cmd.split(" ")[1] == 'id' && typeof cmd.split(" ")[2] !== 'undefined') {
-                //if "track id <id>" is specified, then play the track id
-                //otherwise we will use the quick play id
-                queueTrack(cmd.split(" ")[2]);
-			} else if (typeof cmd.split(" ")[1] !== 'undefined') {
-				term.echo("debug (queue option 1: quick play)");
-                //our safe zone will be 1-300 for quick play numbers
-                //you will be able to supply a track id using syntax "play id <track id>"
-                if(cmd.split(" ")[1] < 300) {
-                    //play the quick play number
-                    term.echo("quick play id supplied: " + (cmd.split(" ")[1]));
-                    queueTrack(searchTracks[(cmd.split(" ")[1] - 1)]);
-                } else {
-                    term.echo("debug (1-300 range exceeded, queueing track id instead)");
-                    //play the track id if out of the 1-300 safety range
-                    queueTrack(cmd.split(" ")[1]);
-                }
-            } else if (typeof cmd.split(" ")[1] === 'undefined') {
-				term.echo("debug (queue option 3)");
-				if(currentTrack['trackId'] !== 0) {
-					term.echo("debug: track_id !== 0 passed");
-                    term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
-					queueTrack(currentTrack['trackId']);
-				}
-			}
+			//"queue" is ingeniously supplied in cmd.split(" ")[0] so that what the user typed is actually supplied to the "queue help" or "play help" menu
+            playOrQueue(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" ")[2]);
 		}
 		if(cmd.split(" ")[0] == 'artist') {
 			if (cmd.split(" ")[1] == 'help') {
