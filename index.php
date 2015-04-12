@@ -263,6 +263,7 @@ $(function() {
                 term.echo("whoami - display your username");
                 term.echo("follow - follow the current artist (default: Encoder Logic) on Soundcloud.");
                 term.echo("comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).");
+				term.echo("like - like the curretly playing track");
              }   
 			term.echo("");
 		}
@@ -535,7 +536,16 @@ $(function() {
             SC.get("/me", function(me){
                 term.echo("User: " + me.username);
             });
-    }
+		}
+		if(cmd.split(" ")[0] == 'like' && loggedIn == 1) {
+			SC.put("/me/favorites/" + currentTrack['trackId']);
+			
+			SC.get("/user/" + soundcloudUserIdClient + "/favorites/0", function(likes) {
+					if(likes.id = currentTrack['trackId']) {
+							term.echo("Current track successfully liked.");
+					}
+			});
+		}
 },{
         prompt: '[anonymous@Encoder Logic]>',
         greetings: 
