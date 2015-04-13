@@ -1,5 +1,5 @@
 <?php
-
+//this is merely a php file in case I want to add any php functionality... it currently doesn't do any of that
 ?>
 <html>
 <head>
@@ -79,6 +79,19 @@ a:hover {
     //the client is for the connecting user (the one who is looking at the webpage)
     var soundcloudUserIdClient = 0;
     var soundcloudUserNameClient = "anonymous";
+	
+	//track limit (increase if your soundcloud has more sounds than the track limit)
+	var trackLimit = 300;
+	
+	//more array contains the info needed to use the tracks command and then type "more" for the next page
+	var moreArray = {
+		//I'm using this variable to build the API URL string e.g. "/users/12345/tracks" (not sure if this is going to be needed in the future)
+		tempAPIURL: "",
+		//page is like the "i" variable to track the pagination
+		page: 0,
+		//this holds the next_href which is used for pulling up the next page
+		nextPageURL: ""
+	};
     
     //boolean loggedIn will return 1 once successfully logged in
     //by default it is 0
@@ -272,9 +285,9 @@ $(function() {
 				}
 			} else if (typeof arg1 !== 'undefined') {
 				term.echo("Using quick play id...");
-                //our safe zone will be 1-300 for quick play numbers (I eventually plan to move this to a variable that can be easily adjusted)
+                //our safe zone will be 1-trackLimit for quick play numbers (I eventually plan to move this to a variable that can be easily adjusted)
                 //you will be able to supply a track id using syntax "play id <track id>"
-                if(arg1 < 300) {
+                if(arg1 < trackLimit) {
                     //play the quick play number
                     term.echo("quick play id supplied: " + (arg1));
 					
@@ -285,8 +298,8 @@ $(function() {
 					}
                     
                 } else {
-                    term.echo("1-300 range exceeded, playing track id instead");
-                    //play the track id if out of the 1-300 safety range
+                    term.echo("1-" + trackLimit + " range exceeded, playing track id instead");
+                    //play the track id if out of the 1-trackLimit safety range
                     if(arg0 == 'play') {
 						playTrack(arg1);
 					} else if (arg0 == 'queue') {
@@ -317,7 +330,114 @@ $(function() {
 			//stop all sounds playing using soundManager (soundcloud uses this)
             soundManager.stopAll();
 		}
-        
+		function tracks(arg0, arg1, searchString) {
+			//build the API query depending on the command used
+			if (arg0 == 'tracks') {
+				moreArray['tempAPIURL'] = "/users/" + soundcloudUserId + "/tracks";
+			} else if (arg0 == 'stream') {
+				moreArray['tempAPIURL'] = "/me/activities/tracks/affiliated";
+			}
+				
+			//this function is used for the 'tracks' and 'stream' commands
+			if (arg1 == 'help') {
+                term.echo("\nsyntax: " + arg0 + " [ help | view | search (search string)]");
+                term.echo("(no arguments): displays 20 most recent uploaded tracks");
+                term.echo("help: show this menu");
+                term.echo("view: go to the soundcloud page of the " + arg0);
+                term.echo("search (search string): searches the tracks with the search string in the title or in the tags");
+                term.echo("");
+			} else if (arg1 == 'view') {
+				if (arg0 == 'tracks') {
+					SC.get("/users/" + soundcloudUserId, function (user) {
+						window.location = user.permalink_url + "/tracks";
+					});
+				} else if (arg0 == 'stream') {
+					window.location = "https://soundcloud.com/stream";
+				}
+            } else if (arg1 == 'search') {
+                term.echo("Searching...");
+				
+                SC.get(moreArray['tempAPIURL'], {limit: trackLimit}, function (tracks) {
+                    //clear searchTracks[]
+                    searchTracks = [];
+                    for (i = 0; i < tracks.length; i++) {
+                        if (tracks[i].title.toLowerCase().search(searchString.toLowerCase()) >= 0 || tracks[i].tag_list.toLowerCase().search(searchString.toLowerCase()) >= 0) {
+                            term.echo((i+1) + ") " + tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
+                            searchTracks[i] = tracks[i].id;
+                        }
+                    }
+                });
+				
+            } else {
+				//if the more command is not used, reset the pagination value to 0 (start over with the pagination)
+				if (arg0 != 'more') {
+					term.echo("First page");
+					moreArray['page'] = 0;
+				}
+				
+				//hopefully this should echo 1-20, 21-40, 41-60, etc
+                term.echo("Tracks " + ((20 * (moreArray['page'])) + 1) + "-" + (20 * (moreArray['page'] + 1)) + ":");
+				term.echo("tempAPIURL == " + moreArray['tempAPIURL']);
+				var page_size = 20;
+				//eventually going to do linked_partitioning but I need to brush up on how that works before I'll be able to implement it
+				// code example: http://jsfiddle.net/iambnz/tehd02y6/
+                SC.get(moreArray['tempAPIURL'], { limit: page_size, linked_partitioning: 1 }, function (tracks) {
+                    //term.echo("Length: " + tracks.collection.length);
+                    //term.echo("Stream: " + tracks.collection[1].origin.title);
+
+                    //clear searchTracks[]
+                    searchTracks = [];
+					term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
+                    
+                    for (i = 0; i < page_size; i++) {
+                        //I hate to do this, because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
+                        if(arg0 == 'tracks') {
+                            term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].id + "] - [[;yellow;]" + tracks.collection[i].user.username  + "] - " + tracks.collection[i].title + ' \n\tlink:' + tracks.collection[i].permalink_url);
+                            //add to the searchTracks array for quick play ids
+                            searchTracks[i] = tracks.collection[i].id;
+                        } else if (arg0 == 'stream') {
+                            term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].origin.id + "] - [[;yellow;]" + tracks.collection[i].origin.user.username  + "] - " + tracks.collection[i].origin.title + ' \n\tlink:' + tracks.collection[i].origin.permalink_url);
+                            //add to the searchTracks array for quick play ids
+                            searchTracks[i] = tracks.collection[i].origin.id;
+                        }
+                    }
+                    
+                    //load the next_href
+					moreArray['nextPageURL'] = tracks.next_href;
+                    term.echo(moreArray['nextPageURL']);
+					//add +1 to the pagination in case "more" is used
+					moreArray['page']++;
+                });
+            }
+        }
+		
+		//I *might* still need this....
+		//these functions will work for the pagination
+		//===========================
+		function linked(obj){
+			term.echo('linked called');
+			if(obj.next_href)
+			{
+				loadMore(obj.next_href);
+				console.log(obj.next_href)
+			}
+
+			$.each(obj.collection, function( key, val ) {
+			   term.echo(val.title);
+			});    
+		}
+
+		function loadMore(url){
+			term.echo('loadMore called url: ' + url);
+			$.getJSON( url, function( tracks ) {
+				linked (tracks);
+			});
+		}
+		//===========================
+		//end pagination functions
+		
+		
+		
         //command interpreter here
         if (cmd.split(" ")[0] == 'help') {
             term.echo("\n=== Available commands ===\n");
@@ -370,40 +490,8 @@ $(function() {
 			term.echo("\tlink: http://introspectivejourneys.bandcamp.com/");
 			term.echo("");
         }
-        if (cmd.split(" ")[0] == 'tracks') {
-            if (cmd.split(" ")[1] == 'help') {
-                term.echo("\nsyntax: tracks [ help | view | search (search string)]");
-                term.echo("(no arguments): displays 20 most recent uploaded tracks");
-                term.echo("help: show this menu");
-                term.echo("view: go to the soundcloud page of all the tracks");
-                term.echo("search (search string): searches the tracks with the search string in the title or in the tags");
-                term.echo("");
-			} else if (cmd.split(" ")[1] == 'view') {
-				window.location = "http://soundcloud.com/encoder-logic/tracks";
-            } else if (cmd.split(" ")[1] == 'search') {
-                term.echo("Searching...");
-                SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 300}, function(tracks){
-                    //clear searchTracks[]
-                    searchTracks = [];
-                    for (i = 0; i < tracks.length; i++) {
-                        if (tracks[i].title.toLowerCase().search(cmd.split(" search ")[1].toLowerCase()) >= 0 || tracks[i].tag_list.toLowerCase().search(cmd.split(" search ")[1].toLowerCase()) >= 0) {
-                            term.echo((i+1) + ") " + tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
-                            searchTracks[i] = tracks[i].id;
-                        }
-                    }
-                });
-            } else {
-                term.echo("20 most recent tracks:");
-                SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 20}, function(tracks){
-                    //clear searchTracks[]
-                    searchTracks = [];
-					term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
-                    for (i = 0; i < tracks.length; i++) {    
-                        term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks[i].id + "] - [[;yellow;]" + tracks[i].user.username  + "] - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
-                        searchTracks[i] = tracks[i].id;
-                    }
-                });
-            }
+        if (cmd.split(" ")[0] == 'tracks' || cmd.split(" ")[0] == 'stream' || cmd.split(" ")[0] == 'more') {
+            tracks(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" search ")[1]);
         } 
         if (cmd.split(" ")[0] == 'follow' && loggedIn == 1) {
             SC.put('/me/followings/' + soundcloudUserId);
@@ -524,6 +612,7 @@ $(function() {
                         //echo the Username, and then set the Username
                         term.echo("User: " + me.username);
                         soundcloudUserNameClient = me.username;
+                        soundcloudUserIdClient = me.id;
                         
                         loggedIn = 1;
                         term.set_prompt("[" + soundcloudUserNameClient + "@" + soundcloudUserName + "]>");
@@ -543,13 +632,15 @@ $(function() {
             });
 		}
 		if(cmd.split(" ")[0] == 'like' && loggedIn == 1) {
+            term.echo("Liking current track: " + currentTrack['trackId']);
 			SC.put("/me/favorites/" + currentTrack['trackId']);
 			
-			SC.get("/user/" + soundcloudUserIdClient + "/favorites/0", function(likes) {
-					if(likes.id == currentTrack['trackId']) {
-							term.echo("Current track successfully liked.");
-					}
-			});
+            //this part hasn't been fixed yet
+			//SC.get("/user/" + soundcloudUserIdClient + "/favorites/0", function(likes) {
+			//		if(likes.id == currentTrack['trackId']) {
+			//				term.echo("Current track successfully liked.");
+			//		}
+			//});
 		}
 },{
         prompt: '[anonymous@Encoder Logic]>',
