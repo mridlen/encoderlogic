@@ -381,33 +381,63 @@ $(function() {
 				var page_size = 20;
 				//eventually going to do linked_partitioning but I need to brush up on how that works before I'll be able to implement it
 				// code example: http://jsfiddle.net/iambnz/tehd02y6/
-                SC.get(moreArray['tempAPIURL'], { limit: page_size, linked_partitioning: 1 }, function (tracks) {
-                    //term.echo("Length: " + tracks.collection.length);
-                    //term.echo("Stream: " + tracks.collection[1].origin.title);
+				
+				//I hate to do this because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
+				if (arg0 != 'more') {
+					SC.get(moreArray['tempAPIURL'], { limit: page_size, linked_partitioning: 1 }, function (tracks) {
+						//term.echo("Length: " + tracks.collection.length);
+						//term.echo("Stream: " + tracks.collection[1].origin.title);
 
-                    //clear searchTracks[]
-                    searchTracks = [];
-					term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
-                    
-                    for (i = 0; i < page_size; i++) {
-                        //I hate to do this, because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
-                        if(arg0 == 'tracks') {
-                            term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].id + "] - [[;yellow;]" + tracks.collection[i].user.username  + "] - " + tracks.collection[i].title + ' \n\tlink:' + tracks.collection[i].permalink_url);
-                            //add to the searchTracks array for quick play ids
-                            searchTracks[i] = tracks.collection[i].id;
-                        } else if (arg0 == 'stream') {
-                            term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].origin.id + "] - [[;yellow;]" + tracks.collection[i].origin.user.username  + "] - " + tracks.collection[i].origin.title + ' \n\tlink:' + tracks.collection[i].origin.permalink_url);
-                            //add to the searchTracks array for quick play ids
-                            searchTracks[i] = tracks.collection[i].origin.id;
-                        }
-                    }
-                    
-                    //load the next_href
-					moreArray['nextPageURL'] = tracks.next_href;
-                    term.echo(moreArray['nextPageURL']);
-					//add +1 to the pagination in case "more" is used
-					moreArray['page']++;
-                });
+						//clear searchTracks[]
+						searchTracks = [];
+						term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
+						
+						for (i = 0; i < page_size; i++) {
+							//I hate to do this, because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
+							if(arg0 == 'tracks') {
+								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].id + "] - [[;yellow;]" + tracks.collection[i].user.username  + "] - " + tracks.collection[i].title + ' \n\tlink:' + tracks.collection[i].permalink_url);
+								//add to the searchTracks array for quick play ids
+								searchTracks[i] = tracks.collection[i].id;
+							} else if (arg0 == 'stream') {
+								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].origin.id + "] - [[;yellow;]" + tracks.collection[i].origin.user.username  + "] - " + tracks.collection[i].origin.title + ' \n\tlink:' + tracks.collection[i].origin.permalink_url);
+								//add to the searchTracks array for quick play ids
+								searchTracks[i] = tracks.collection[i].origin.id;
+							}
+						}
+						
+						//load the next_href
+						moreArray['nextPageURL'] = tracks.next_href;
+						term.echo(moreArray['nextPageURL']);
+						//add +1 to the pagination in case "more" is used
+						moreArray['page']++;
+					});
+				} else { // arg0 == 'more'
+					//I've got this working for the tracks command but it is not yet working for the stream command
+					$.getJSON( moreArray['nextPageURL'], function( tracks ) {
+						//term.echo("Length: " + tracks.collection.length);
+						//term.echo("Stream: " + tracks.collection[1].origin.title);
+
+						//clear searchTracks[]
+						searchTracks = [];
+						term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
+						
+						for (i = 0; i < page_size; i++) {
+							//I hate to do this, because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
+
+								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].id + "] - [[;yellow;]" + tracks.collection[i].user.username  + "] - " + tracks.collection[i].title + ' \n\tlink:' + tracks.collection[i].permalink_url);
+								//add to the searchTracks array for quick play ids
+								searchTracks[i] = tracks.collection[i].id;
+
+						}
+						
+						//load the next_href
+						moreArray['nextPageURL'] = tracks.next_href;
+						term.echo(moreArray['nextPageURL']);
+						//add +1 to the pagination in case "more" is used
+						moreArray['page']++;
+					});
+					
+				}
             }
         }
 		
@@ -460,6 +490,7 @@ $(function() {
                 term.echo("follow - follow the current artist (default: Encoder Logic) on Soundcloud.");
                 term.echo("comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).");
 				term.echo("like - like the curretly playing track");
+				term.echo("stream - display the tracks in your stream");
              }   
 			term.echo("");
 		}
