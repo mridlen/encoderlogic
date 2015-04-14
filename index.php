@@ -478,6 +478,7 @@ $(function() {
             term.echo("soundcloud - redirect to >ENCODER LOGIC_ Soundcloud.");
 			term.echo("facebook - redirect to >ENCODER LOGIC_ Facebook page.");
             term.echo("tracks [help] - display latest uploaded tracks.");
+			term.echo("more - display the next page of tracks (you have to run 'tracks' first, obviously)");
             term.echo("play [help] - play a track (search for the track id using the tracks command).");
             term.echo("stop - stop currently playing track.");
 			term.echo("next - skip current track and play the next song in the queue");
