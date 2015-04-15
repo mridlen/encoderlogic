@@ -79,6 +79,9 @@ a:hover {
     //the client is for the connecting user (the one who is looking at the webpage)
     var soundcloudUserIdClient = 0;
     var soundcloudUserNameClient = "anonymous";
+    //OAuth Token... I hate to have to store it in a variable but accessing the stream next_href requires it for some odd reason
+    //format is "oauth_token=xxxx"
+    var soundcloudOAuthToken = "";
 	
 	//track limit (increase if your soundcloud has more sounds than the track limit)
 	var trackLimit = 300;
@@ -640,6 +643,13 @@ $(function() {
                             //echo the Artist name, and then set the Artist name
                             term.echo("Artist: " + user.username);
                             soundcloudUserName = user.username;
+                        });
+                        //this call sets the oauth_token for the logged in user (needed for accessing the soundcloud stream)
+                        SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 1, linked_partitioning: 1}, function(tracks) {
+                            //uncomment for debugging
+                            //term.echo("tracks next_href: " + tracks.next_href);
+                            //term.echo("split on &: " + tracks.next_href.split("&")[3]);
+                            soundcloudOAuthToken = tracks.next_href.split("&")[3];
                         });
                         //echo the Username, and then set the Username
                         term.echo("User: " + me.username);
