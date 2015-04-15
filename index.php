@@ -380,9 +380,13 @@ $(function() {
 				
 				//hopefully this should echo 1-20, 21-40, 41-60, etc
                 term.echo("Tracks " + ((20 * (moreArray['page'])) + 1) + "-" + (20 * (moreArray['page'] + 1)) + ":");
-				term.echo("tempAPIURL == " + moreArray['tempAPIURL']);
+				
+				//uncomment for debugging
+				//term.echo("tempAPIURL == " + moreArray['tempAPIURL']);
+				
 				var page_size = 20;
-				//eventually going to do linked_partitioning but I need to brush up on how that works before I'll be able to implement it
+				
+				//I've got linked partitioning working, but this is a good code example in case I need to reference it later
 				// code example: http://jsfiddle.net/iambnz/tehd02y6/
 				
 				//I hate to do this because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
@@ -409,12 +413,21 @@ $(function() {
 						}
 						
 						//load the next_href
-						moreArray['nextPageURL'] = tracks.next_href;
-						term.echo(moreArray['nextPageURL']);
+						if (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") { // i.e. stream
+							//uncomment for debugging
+							//term.echo(tracks.next_href + "&" + soundcloudOAuthToken);
+							
+							moreArray['nextPageURL'] = tracks.next_href + "&" + soundcloudOAuthToken;
+						} else {
+							moreArray['nextPageURL'] = tracks.next_href;
+						}
 						//add +1 to the pagination in case "more" is used
 						moreArray['page']++;
 					});
 				} else { // arg0 == 'more'
+					//uncomment for debugging
+					//term.echo("nextPageURL" + moreArray['nextPageURL']);
+					
 					//I've got this working for the tracks command but it is not yet working for the stream command
 					$.getJSON( moreArray['nextPageURL'], function( tracks ) {
 						//term.echo("Length: " + tracks.collection.length);
@@ -426,16 +439,30 @@ $(function() {
 						
 						for (i = 0; i < page_size; i++) {
 							//I hate to do this, because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
-
+							if(moreArray['tempAPIURL'] != "/me/activities/tracks/affiliated") {
 								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].id + "] - [[;yellow;]" + tracks.collection[i].user.username  + "] - " + tracks.collection[i].title + ' \n\tlink:' + tracks.collection[i].permalink_url);
 								//add to the searchTracks array for quick play ids
 								searchTracks[i] = tracks.collection[i].id;
-
+							} else if (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") {
+								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].origin.id + "] - [[;yellow;]" + tracks.collection[i].origin.user.username  + "] - " + tracks.collection[i].origin.title + ' \n\tlink:' + tracks.collection[i].origin.permalink_url);
+								//add to the searchTracks array for quick play ids
+								searchTracks[i] = tracks.collection[i].origin.id;
+							}
 						}
 						
 						//load the next_href
-						moreArray['nextPageURL'] = tracks.next_href;
-						term.echo(moreArray['nextPageURL']);
+						if (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") { // i.e. stream
+							//uncomment for debugging
+							//term.echo(tracks.next_href + "&" + soundcloudOAuthToken);
+							
+							moreArray['nextPageURL'] = tracks.next_href + "&" + soundcloudOAuthToken;
+						} else {
+							moreArray['nextPageURL'] = tracks.next_href;
+						}
+						
+						//uncomment for debugging
+						//term.echo("next_href: " + moreArray['nextPageURL']);
+						
 						//add +1 to the pagination in case "more" is used
 						moreArray['page']++;
 					});
