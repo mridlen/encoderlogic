@@ -518,7 +518,7 @@ $(function() {
             if (loggedIn == 1) {
                 term.echo("logout - refreshes the page, effectively logging you out");
                 term.echo("whoami - display your username");
-                term.echo("follow - follow the current artist (default: Encoder Logic) on Soundcloud.");
+                term.echo("follow [track] - follow the current artist (default: Encoder Logic) on Soundcloud. (or use 'follow track' to follow the currently playing track)");
                 term.echo("comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).");
 				term.echo("like - like the curretly playing track");
 				term.echo("stream - display the tracks in your stream");
@@ -556,8 +556,15 @@ $(function() {
             tracks(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" search ")[1]);
         } 
         if (cmd.split(" ")[0] == 'follow' && loggedIn == 1) {
-            SC.put('/me/followings/' + soundcloudUserId);
-			
+			if (cmd.split(" ")[1] == 'track') {
+				SC.get("/tracks/" + currentTrack['id'], function(track) {
+					term.echo("Following " + track.user.username + ".");
+					SC.put('/me/followings/' + track.user.id);
+				});
+			} else {
+				term.echo("Following " + soundcloudUserId);
+				SC.put('/me/followings/' + soundcloudUserId);
+			}
 			//this section is not working yet!!
 			//SC.get("/user/" + soundcloudUserIdClient + "/followings/0", function(follows) {
 			//		if(follows.id == soundcloudUserId) {
