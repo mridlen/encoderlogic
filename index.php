@@ -143,19 +143,27 @@ $(function() {
         }
 		function queueTrack(track_id) {
 			if (typeof track_id !== 'undefined') {
-				term.echo("Adding track to end of queue: " + track_id);
+				SC.get("/tracks/" + track_id, function (track) {
+					term.echo("Adding track to end of queue: " + track.user.username + " - " + track.title + " - link:" + track.permalink_url);
+				});
 				queue.push(track_id);
+			} else {
+				term.echo("");
+				term.echo("=== " + queue.length + " TRACKS QUEUED ===");
+				term.echo("");
+				
+				for (i = 0; i < queue.length; i++) {
+					queueDisplay(i, queue[i]); //i == queue_id, queue[i] == track_id
+				}
+
+				term.echo("");
 			}
-			term.echo("");
-			term.echo("=== QUEUE ===");
-			term.echo("queue.length: " + queue.length);
-			term.echo("");
-			for (i = 0; i < queue.length; i++) {
-				SC.get("/tracks/" + queue[i], function(track) {
-                    term.echo("track_id: " + track_id + " " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url);
-                });
-			}
-			term.echo("");
+		}
+		//I was forced to move this to a separate function to resolve a race condition
+		function queueDisplay(queue_id, track_id) {
+			SC.get("/tracks/" + track_id, function(track) {
+				term.echo((queue_id + 1) + ") track_id: " + track_id + " " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url);
+            });
 		}
 		//a function to play tracks and work with the queue
 		function playTrack(track_id) {
@@ -166,7 +174,7 @@ $(function() {
                     //unfortunately due to the nature of this application I am not able to attach an image, but I feel that
                     //this application matches the spirit of the policy since I
                     //1) give credit to soundcloud
-                    //2) give credit to the original creator of the music (me)
+                    //2) give credit to the original creator of the music
                     //3) link to soundcloud
                     //4) don't impersonate soundcloud
                     SC.get("/tracks/" + track_id, function(track) {
@@ -254,6 +262,14 @@ $(function() {
 				//exit the function early
 				return;
 			}
+			if (arg0 == 'queue' && arg1 == 'remove' && !isNaN(arg2)) {
+				//remove the track from the queue, arg2 holds the queue id
+				//subtract 1 because array starts at 0, remove 1 element
+				queue.splice((arg2 - 1), 1);
+				
+				//exit the function early
+				return;
+			}
 			if (arg1 == 'help') {
                 term.echo("");
                 term.echo("You can use the '" + arg0 + "' command a couple of different ways");
@@ -269,10 +285,12 @@ $(function() {
 				term.echo("Force a track id to be used instead of a quick play id:");
 				term.echo("\t" + arg0 + " id 2");
 				term.echo("(Try it! That " + arg0 + "s the oldest soundcloud track)");
-				//there is one more way to use the queue command vs the play command
+				//there are more ways to use the queue command vs the play command
 				if (arg0 == 'queue') {
 					term.echo("Clear the " + arg0 + ":");
 					term.echo("\t" + arg0 + " clear");
+					term.echo("Remove a track from the " + arg0 + ":");
+					term.echo("\t" + arg0 + " remove 2");
 				}
                 term.echo("");
                 term.echo("Note:");
@@ -287,12 +305,12 @@ $(function() {
 					queueTrack(arg2);
 				}
 			} else if (typeof arg1 !== 'undefined') {
-				term.echo("Using quick play id...");
+				//term.echo("Using quick play id...");
                 //our safe zone will be 1-trackLimit for quick play numbers (I eventually plan to move this to a variable that can be easily adjusted)
                 //you will be able to supply a track id using syntax "play id <track id>"
                 if(arg1 < trackLimit) {
                     //play the quick play number
-                    term.echo("quick play id supplied: " + (arg1));
+                    //term.echo("quick play id supplied: " + (arg1));
 					
 					if(arg0 == 'play') {
 						playTrack(searchTracks[(arg1 - 1)]);
@@ -316,6 +334,7 @@ $(function() {
 						term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
 						playTrack(currentTrack['trackId']);
 					} else if (arg0 == 'queue') {
+						//this will display the queue
 						queueTrack();
 					}
 				
