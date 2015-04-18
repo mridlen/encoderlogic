@@ -66,6 +66,7 @@ a:hover {
     <script src="http://connect.soundcloud.com/sdk.js"></script>
     <script src="terminal/js/jquery-1.7.1.min.js"></script>
 	<script src="terminal/js/jquery.terminal-src.js"></script>
+	
     <script>
     // initialize client with app credentials
     SC.initialize({
@@ -85,6 +86,9 @@ a:hover {
 	
 	//track limit (increase if your soundcloud has more sounds than the track limit)
 	var trackLimit = 300;
+    
+    //setting the page size default here (for pagination purposes)
+    var page_size = 20;
 	
 	//more array contains the info needed to use the tracks command and then type "more" for the next page
 	var moreArray = {
@@ -129,6 +133,9 @@ a:hover {
 	
 	//searchArtists array holds the userIds of the recent artist search
 	var searchArtists = [];
+    
+    //this holds the relevant properties of the track object
+    //var theListOfTracks = [];
 	
 	//for comment posting
 	var commentTimestamp = 0;
@@ -141,6 +148,7 @@ $(function() {
 		function authorizeSoundcloud() {
             term.echo( window.SC.storage().getItem('SC.accessToken') );
         }
+        
 		function queueTrack(track_id) {
 			if (typeof track_id !== 'undefined') {
 				SC.get("/tracks/" + track_id, function (track) {
@@ -159,12 +167,14 @@ $(function() {
 				term.echo("");
 			}
 		}
+        
 		//I was forced to move this to a separate function to resolve a race condition
 		function queueDisplay(queue_id, track_id) {
 			SC.get("/tracks/" + track_id, function(track) {
 				term.echo((queue_id + 1) + ") track_id: " + track_id + " " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url);
             });
 		}
+        
 		//a function to play tracks and work with the queue
 		function playTrack(track_id) {
 			//track_id = cmd.split(" ")[1];
@@ -211,6 +221,7 @@ $(function() {
 				term.echo("Not a valid number.");
 			}
 		}
+        
 		function playNextTrack () {
 			if (queue.length > 0) {
 				term.echo("Playing next track.");
@@ -222,6 +233,7 @@ $(function() {
 				queue.splice(0, 1);
 			}
 		}
+        
 		//output timed comments to screen based on timestamp data
 		function timedComment(iteration, timestamp, username, body) {
 			//iteration is passed to give unique timeouts to each comment
@@ -229,6 +241,7 @@ $(function() {
 				term.echo("[" + timestamp + "] " + username + ": " + body);
 			}, timestamp);
 		}
+        
 		function displayTimedComments(track_id) {
 			//uncomment for debugging:
 			//term.echo("track_id: " + track_id);
@@ -253,6 +266,7 @@ $(function() {
 				term.echo ("Not a number.");
 			}
 		}
+        
 		function playOrQueue(arg0, arg1, arg2) {
 			if (arg0 == 'queue' && arg1 == 'clear') {
 				//"queue clear" command...
@@ -340,6 +354,7 @@ $(function() {
 				
 			}
 		}
+        
 		function stopTrack(){
 			term.echo("Stopping track.");
 			
@@ -352,6 +367,7 @@ $(function() {
 			//stop all sounds playing using soundManager (soundcloud uses this)
             soundManager.stopAll();
 		}
+        
 		function tracks(arg0, arg1, searchString) {
 			//build the API query depending on the command used
 			if (arg0 == 'tracks') {
@@ -390,7 +406,7 @@ $(function() {
                     }
                 });
 				
-            } else {
+            } else { //this is 
 				//if the more command is not used, reset the pagination value to 0 (start over with the pagination)
 				if (arg0 != 'more') {
 					term.echo("First page");
@@ -403,117 +419,124 @@ $(function() {
 				//uncomment for debugging
 				//term.echo("tempAPIURL == " + moreArray['tempAPIURL']);
 				
-				var page_size = 20;
-				
-				//I've got linked partitioning working, but this is a good code example in case I need to reference it later
-				// code example: http://jsfiddle.net/iambnz/tehd02y6/
-				
-				//I hate to do this because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
-				if (arg0 != 'more') {
-					SC.get(moreArray['tempAPIURL'], { limit: page_size, linked_partitioning: 1 }, function (tracks) {
-						//term.echo("Length: " + tracks.collection.length);
-						//term.echo("Stream: " + tracks.collection[1].origin.title);
-
-						//clear searchTracks[]
-						searchTracks = [];
-						term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
-						
-						for (i = 0; i < page_size; i++) {
-							//I hate to do this, because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
-							if(arg0 == 'tracks') {
-								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].id + "] - [[;yellow;]" + tracks.collection[i].user.username  + "] - " + tracks.collection[i].title + ' \n\tlink:' + tracks.collection[i].permalink_url);
-								//add to the searchTracks array for quick play ids
-								searchTracks[i] = tracks.collection[i].id;
-							} else if (arg0 == 'stream') {
-								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].origin.id + "] - [[;yellow;]" + tracks.collection[i].origin.user.username  + "] - " + tracks.collection[i].origin.title + ' \n\tlink:' + tracks.collection[i].origin.permalink_url);
-								//add to the searchTracks array for quick play ids
-								searchTracks[i] = tracks.collection[i].origin.id;
-							}
-						}
-						
-						//load the next_href
-						if (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") { // i.e. stream
-							//uncomment for debugging
-							//term.echo(tracks.next_href + "&" + soundcloudOAuthToken);
-							
-							moreArray['nextPageURL'] = tracks.next_href + "&" + soundcloudOAuthToken;
-						} else {
-							moreArray['nextPageURL'] = tracks.next_href;
-						}
-						//add +1 to the pagination in case "more" is used
-						moreArray['page']++;
-					});
-				} else { // arg0 == 'more'
-					//uncomment for debugging
-					//term.echo("nextPageURL" + moreArray['nextPageURL']);
-					
-					//I've got this working for the tracks command but it is not yet working for the stream command
-					$.getJSON( moreArray['nextPageURL'], function( tracks ) {
-						//term.echo("Length: " + tracks.collection.length);
-						//term.echo("Stream: " + tracks.collection[1].origin.title);
-
-						//clear searchTracks[]
-						searchTracks = [];
-						term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
-						
-						for (i = 0; i < page_size; i++) {
-							//I hate to do this, because it duplicates a lot of stuff, but I can't find a better way to do it at the moment
-							if(moreArray['tempAPIURL'] != "/me/activities/tracks/affiliated") {
-								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].id + "] - [[;yellow;]" + tracks.collection[i].user.username  + "] - " + tracks.collection[i].title + ' \n\tlink:' + tracks.collection[i].permalink_url);
-								//add to the searchTracks array for quick play ids
-								searchTracks[i] = tracks.collection[i].id;
-							} else if (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") {
-								term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + tracks.collection[i].origin.id + "] - [[;yellow;]" + tracks.collection[i].origin.user.username  + "] - " + tracks.collection[i].origin.title + ' \n\tlink:' + tracks.collection[i].origin.permalink_url);
-								//add to the searchTracks array for quick play ids
-								searchTracks[i] = tracks.collection[i].origin.id;
-							}
-						}
-						
-						//load the next_href
-						if (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") { // i.e. stream
-							//uncomment for debugging
-							//term.echo(tracks.next_href + "&" + soundcloudOAuthToken);
-							
-							moreArray['nextPageURL'] = tracks.next_href + "&" + soundcloudOAuthToken;
-						} else {
-							moreArray['nextPageURL'] = tracks.next_href;
-						}
-						
-						//uncomment for debugging
-						//term.echo("next_href: " + moreArray['nextPageURL']);
-						
-						//add +1 to the pagination in case "more" is used
-						moreArray['page']++;
-					});
-					
-				}
+                listTracks(arg0);
             }
         }
-		
-		//I *might* still need this....
-		//these functions will work for the pagination
-		//===========================
-		function linked(obj){
-			term.echo('linked called');
-			if(obj.next_href)
-			{
-				loadMore(obj.next_href);
-				console.log(obj.next_href)
-			}
-
-			$.each(obj.collection, function( key, val ) {
-			   term.echo(val.title);
-			});    
-		}
-
-		function loadMore(url){
-			term.echo('loadMore called url: ' + url);
-			$.getJSON( url, function( tracks ) {
-				linked (tracks);
+        
+        function listTracks(arg0) {
+            
+            //clear searchTracks[]
+            searchTracks = [];
+            
+            //first we need to split depending on if tracks/search or more is used
+            //we will be dumping the list of tracks into theListOfTracks
+            if (arg0 != 'more') { //arg0 == 'stream' || arg0 == 'tracks'
+                if(moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") {
+                    listTracksStream();
+                } else {
+                    listTracksTracks();
+                }
+            } else { //arg0 == 'more'
+            //the only reason we care if arg0 == 'more' is because we have use a different method to query the API
+                if(moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") {
+                    moreTracksStream();
+                } else {
+                    moreTracksTracks();
+                }
+            }
+        }
+        function listTracksTracks() {
+            var theListOfTracks = [];
+			SC.get(moreArray['tempAPIURL'], { limit: page_size, linked_partitioning: 1 }, function (tracks) {
+				for (i = 0; i < page_size; i++) {
+					theListOfTracks[i] = {
+						id: tracks.collection[i].id,
+						username: tracks.collection[i].user.username,
+						title: tracks.collection[i].title,
+						permalink_url: tracks.collection[i].permalink_url
+					};
+				}
+				formatTracks(theListOfTracks);
+				getNextHref(tracks.next_href);
 			});
+        }
+        
+        function listTracksStream() {
+            var theListOfTracks = [];
+            SC.get(moreArray['tempAPIURL'], { limit: page_size, linked_partitioning: 1 }, function (tracks) {
+                for (i = 0; i < page_size; i++) {
+                    theListOfTracks[i] = {
+                        id: tracks.collection[i].origin.id,
+                        username: tracks.collection[i].origin.user.username,
+                        title: tracks.collection[i].origin.title,
+                        permalink_url: tracks.collection[i].origin.permalink_url
+                    };
+                }
+				formatTracks(theListOfTracks);
+				getNextHref(tracks.next_href);
+            });
+        }
+        
+        function moreTracksTracks() {
+            var theListOfTracks = [];
+            $.getJSON(moreArray['nextPageURL'], function( tracks ) {
+                for (i = 0; i < page_size; i++) {
+                    theListOfTracks[i] = {
+                        id: tracks.collection[i].id,
+                        username: tracks.collection[i].user.username,
+                        title: tracks.collection[i].title,
+                        permalink_url: tracks.collection[i].permalink_url
+                    };
+                }
+				formatTracks(theListOfTracks);
+				getNextHref(tracks.next_href);
+            });
+        }
+        
+        function moreTracksStream() {
+            var theListOfTracks = [];
+            $.getJSON(moreArray['nextPageURL'], function( tracks ) {
+                for (i = 0; i < page_size; i++) {
+                    theListOfTracks[i] = {
+                        id: tracks.collection[i].origin.id,
+                        username: tracks.collection[i].origin.user.username,
+                        title: tracks.collection[i].origin.title,
+                        permalink_url: tracks.collection[i].origin.permalink_url
+                    };
+                }
+				formatTracks(theListOfTracks);
+				getNextHref(tracks.next_href);
+            });
+        }
+		
+		function formatTracks(theListOfTracks) {
+			console.log(theListOfTracks);
+			//output the header
+            term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
+			
+            //output the list of tracks
+            for (i = 0; i < page_size; i++) {
+				term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + theListOfTracks[i].id + "] - [[;yellow;]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title + ' \n\tlink:' + theListOfTracks[i].permalink_url);                
+                searchTracks[i] = theListOfTracks[i].id;
+            }
 		}
-		//===========================
-		//end pagination functions
+		
+		function getNextHref(next_href) {
+			 //load the next_href
+            if (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") { // i.e. stream
+                //uncomment for debugging
+                //term.echo(tracks.next_href + "&" + soundcloudOAuthToken);
+                
+                moreArray['nextPageURL'] = next_href + "&" + soundcloudOAuthToken;
+				console.log("nextPageURL " + moreArray['nextPageURL']);
+            } else {
+                moreArray['nextPageURL'] = next_href;
+				console.log("nextPageURL " + moreArray['nextPageURL']);
+            }
+			
+			//add +1 to the pagination in case "more" is used
+			moreArray['page']++;
+		}
 		
 		
 		
