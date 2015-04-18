@@ -116,6 +116,9 @@ a:hover {
 	//declare global variables
 	//queue holds the track_ids that are pending on the playlist
 	var queue = [];
+	//queue strings holds the formatted strings from the queue
+	var queueStrings = [];
+	
 	var followers_ids = [];
 	var currentTrack = {
 		trackId: 0,
@@ -160,19 +163,32 @@ $(function() {
 				term.echo("=== " + queue.length + " TRACKS QUEUED ===");
 				term.echo("");
 				
+				
 				for (i = 0; i < queue.length; i++) {
-					queueDisplay(i, queue[i]); //i == queue_id, queue[i] == track_id
+					queueDisplay(i, queue[i]);
 				}
-
+				
+				
+				
 				term.echo("");
 			}
 		}
         
 		//I was forced to move this to a separate function to resolve a race condition
 		function queueDisplay(queue_id, track_id) {
-			SC.get("/tracks/" + track_id, function(track) {
-				term.echo((queue_id + 1) + ") track_id: " + track_id + " " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url);
-            });
+				SC.get("/tracks/" + track_id, function(track) {
+					queueStrings[queue_id] = ("[[;cyan;]" + (queue_id + 1) + ")] [[;red;]" + track_id + "] - [[;yellow;]" + track.user.username + "] - " + track.title + "\n\tlink: " + track.permalink_url);
+					
+					//this is the most sane way to make sure that the entire queue is sent to the output
+					//it has to be done within SC.get on the last track
+					//I can potentially imagine a situation where one of the SC.get calls does not come back in time though, but it should work *most* of the time
+					//not really mission critical for it to display correctly 100% of the time
+					if(queue_id == (queue.length - 1)) {
+						for (i = 0; i < queue.length; i++) {
+							term.echo(queueStrings[i]);
+						}
+					}
+				});
 		}
         
 		//a function to play tracks and work with the queue
@@ -280,7 +296,7 @@ $(function() {
 				//remove the track from the queue, arg2 holds the queue id
 				//subtract 1 because array starts at 0, remove 1 element
 				queue.splice((arg2 - 1), 1);
-				
+				queueStrings.splice((arg2 - 1), 1);
 				//exit the function early
 				return;
 			}
