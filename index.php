@@ -736,7 +736,7 @@ $(function() {
 				term.echo("searching for: " + cmd.split(" search ")[1]);
 				SC.get("/users", { limit: 20, q: cmd.split(" search ")[1] }, function(artists) {
 					for(i = 0; i < artists.length; i++) {
-						term.echo((i+1) + ") " + artists[i].username);
+						term.echo("[[;" + theme['quickIdColor'] + ";]" + (i+1) + ")] [[;" + theme['artistIdColor'] + ";]" + artists[i].username + "]");
 						searchArtists[i] = artists[i].id;
 					}
 				});
