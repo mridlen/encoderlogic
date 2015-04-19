@@ -90,6 +90,13 @@ a:hover {
     //setting the page size default here (for pagination purposes)
     var page_size = 20;
 	
+	//theme used for color formatting
+	var theme = {
+		quickIdColor: "cyan",
+		trackIdColor: "red",
+		artistIdColor: "yellow"
+	}
+	
 	//more array contains the info needed to use the tracks command and then type "more" for the next page
 	var moreArray = {
 		//I'm using this variable to build the API URL string e.g. "/users/12345/tracks" (not sure if this is going to be needed in the future)
@@ -125,7 +132,8 @@ a:hover {
 		trackArtist: "",
 		trackName: "",
 		trackDuration: 0,
-		startedTimestamp: 0
+		startedTimestamp: 0,
+		trackPosition: 0
 	};
 	
 	//timeoutValue array has the timeouts for all the comments
@@ -177,7 +185,7 @@ $(function() {
 		//I was forced to move this to a separate function to resolve a race condition
 		function queueDisplay(queue_id, track_id) {
 				SC.get("/tracks/" + track_id, function(track) {
-					queueStrings[queue_id] = ("[[;cyan;]" + (queue_id + 1) + ")] [[;red;]" + track_id + "] - [[;yellow;]" + track.user.username + "] - " + track.title + "\n\tlink: " + track.permalink_url);
+					queueStrings[queue_id] = ("[[;"+ theme['quickIdColor'] +";]" + (queue_id + 1) + ")] [[;"+ theme['trackIdColor'] +";]" + track_id + "] - [[;"+ theme['artistIdColor'] +";]" + track.user.username + "] - " + track.title + "\n\tlink: " + track.permalink_url);
 					
 					//this is the most sane way to make sure that the entire queue is sent to the output
 					//it has to be done within SC.get on the last track
@@ -215,9 +223,12 @@ $(function() {
                     });
                     //stops any currently playing track
                     soundManager.stopAll();
-                    
+					
+					console.log("Current position: " + currentTrack['trackPosition']);
+					
                     //sound already references the track id when the API function is called, so nothing else to supply it but play()
 					sound.play({
+						position: currentTrack['trackPosition'],
                         onfinish: function() {
                             term.echo("Song finished playing.");
 							
@@ -227,7 +238,7 @@ $(function() {
 							}
                         }
                     });
-					displayTimedComments(track_id);
+					displayTimedComments(track_id, currentTrack['trackPosition']);
 
                     //sound.onfinish(function() {
                     //    term.echo("Song finished playing.");
@@ -258,18 +269,18 @@ $(function() {
 			}, timestamp);
 		}
         
-		function displayTimedComments(track_id) {
+		function displayTimedComments(track_id, offset) {
 			//uncomment for debugging:
 			//term.echo("track_id: " + track_id);
-			if (!isNaN(track_id)) {
+			if (!isNaN(track_id) && !isNaN(offset)) {
 				SC.get("/tracks/" + track_id + "/comments", function(comments) {
 					for (i = 0; i < comments.length; i++) {
 						//the purpose of this offset is to make original comments appear first in the order on screen
 						var replyOffset = 0;
 						if (comments[i].body.split("@").length < 2) {
-							replyOffset = comments[i].timestamp;
+							replyOffset = comments[i].timestamp - offset;
 						} else {
-							replyOffset = comments[i].timestamp - 1;
+							replyOffset = comments[i].timestamp - 1 - offset;
 						}
 						//uncomment for debugging:
 						//term.echo(i + " " + replyOffset + " " + comments[i].user.username + " " + comments[i].body);
@@ -382,6 +393,17 @@ $(function() {
 			timeoutValue = [];
 			//stop all sounds playing using soundManager (soundcloud uses this)
             soundManager.stopAll();
+		}
+		
+		function pauseTrack() {
+			//the amount of time elapsed since the track was played and then stopped
+			var timeElapsed = Date.now() - currentTrack['startedTimestamp'];
+			
+			//add the amount of time elapsed to the current track position
+			currentTrack['trackPosition'] = currentTrack['trackPosition'] + timeElapsed;
+			
+			term.echo("Track paused at " + currentTrack['trackPosition']);
+			stopTrack();
 		}
         
 		function tracks(arg0, arg1, searchString) {
@@ -528,11 +550,11 @@ $(function() {
 		function formatTracks(theListOfTracks) {
 			console.log(theListOfTracks);
 			//output the header
-            term.echo("[[;cyan;]Quick Play ID] [[;red;]Track ID] [[;yellow;]Artist] Track");
+            term.echo("[[;"+ theme['quickIdColor'] +";]Quick Play ID] [[;"+ theme['trackIdColor'] +";]Track ID] [[;"+ theme['artistIdColor'] +";]Artist] Track");
 			
             //output the list of tracks
             for (i = 0; i < page_size; i++) {
-				term.echo("[[;cyan;]" + (i+1) + ")] [[;red;]" + theListOfTracks[i].id + "] - [[;yellow;]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title + ' \n\tlink:' + theListOfTracks[i].permalink_url);                
+				term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" + theListOfTracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title + ' \n\tlink:' + theListOfTracks[i].permalink_url);                
                 searchTracks[i] = theListOfTracks[i].id;
             }
 		}
@@ -636,6 +658,9 @@ $(function() {
 		}
 		if (cmd.split(" ")[0] == 'stop') {
 			stopTrack();
+		}
+		if (cmd.split(" ")[0] == 'pause') {
+			pauseTrack();
 		}
 		if(cmd.split(" ")[0] == 'next') {
 			stopTrack();
