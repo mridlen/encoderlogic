@@ -590,7 +590,8 @@ $(function() {
             term.echo("tracks [help] - display latest uploaded tracks.");
 			term.echo("more - display the next page of tracks (you have to run 'tracks' first, obviously)");
             term.echo("play [help] - play a track (search for the track id using the tracks command).");
-            term.echo("stop - stop currently playing track.");
+            term.echo("stop - stop currently playing track and reset the track position to the beginning.");
+			term.echo("pause - pause current track at its current playing position (use play to resume).");
 			term.echo("next - skip current track and play the next song in the queue");
 			term.echo("queue [help] - display the play queue. (search for the track id using the tracks command).");
             term.echo("login - prompt for user login via soundcloud connect popup (this enables more commands!)");
@@ -658,6 +659,7 @@ $(function() {
 		}
 		if (cmd.split(" ")[0] == 'stop') {
 			stopTrack();
+			currentTrack['trackPosition'] = 0;
 		}
 		if (cmd.split(" ")[0] == 'pause') {
 			pauseTrack();
