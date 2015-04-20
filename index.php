@@ -16,6 +16,7 @@
     <style>
 body {
     background-color: #000000;
+	width: 1500px;
 }
 .wrapper {
 	position: relative;
