@@ -918,7 +918,7 @@ $(function() {
         greetings: 
             '            >ENCODER LOGIC _   \n\n' +
             '    ++ Official Terminal Server ++\n\n' +
-            'Command Interface: version 1.3\n\n' +
+            'Command Interface: version 1.4\n\n' +
             'Type "help" for commands or type "soundcloud" to skip directly to the music.\n' +
             'Type "login" to connect with soundcloud (this enables more commands!)\n\n',
         keypress: function(e) {
