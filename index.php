@@ -125,6 +125,8 @@ a:hover {
 	var queue = [];
 	//queue strings holds the formatted strings from the queue
 	var queueStrings = [];
+	//queue loop boolean - if 1 will loop the queue instead of retiring played tracks, default 0 (off)
+	var queueLoop = 0;
 	
 	var followers_ids = [];
 	var currentTrack = {
@@ -252,8 +254,12 @@ $(function() {
 		function playNextTrack () {
 			if (queue.length > 0) {
 				term.echo("Playing next track.");
+				if (queueLoop == 1) {
+					//add the current track to the end of queue
+					queue.push(currentTrack['trackId']);
+				}
 				playTrack(queue[0]);
-				
+
 				//remove the track from the queue
 				//0 - array element (0 == top of queue)
 				//1 - number of elements to remove
@@ -311,6 +317,23 @@ $(function() {
 				//exit the function early
 				return;
 			}
+			if (arg0 == 'queue' && arg1 == 'loop') {
+				if (arg2 == 0 || arg2 == 'off') {
+					queueLoop = 0;
+					term.echo("Queue Loop: off");
+				} else if (arg2 == 1 || arg2 == 'on') {
+					queueLoop = 1;
+					term.echo("Queue Loop: on");
+				} else {
+					if (queueLoop == 0) {
+						term.echo("Queue Loop: off");
+					} else if (queueLoop == 1) {
+						term.echo("Queue Loop: on");
+					}
+				}
+				//exit the function early
+				return;
+			}			
 			if (arg1 == 'help') {
                 term.echo("");
                 term.echo("You can use the '" + arg0 + "' command a couple of different ways");
@@ -332,6 +355,14 @@ $(function() {
 					term.echo("\t" + arg0 + " clear");
 					term.echo("Remove a track from the " + arg0 + ":");
 					term.echo("\t" + arg0 + " remove 2");
+					term.echo("Turn on "+ arg0 + " looping:");
+					term.echo("\t" + arg0 + " loop on");
+					term.echo("\tor");
+					term.echo("\t" + arg0 + " loop 1");
+					term.echo("Turn off "+ arg0 + " looping (endless playlist looping):");
+					term.echo("\t" + arg0 + " loop off");
+					term.echo("\tor");
+					term.echo("\t" + arg0 + " loop 0");
 				}
                 term.echo("");
                 term.echo("Note:");
