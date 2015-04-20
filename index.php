@@ -63,6 +63,7 @@ a:visited {
 a:hover {
     color: #22BB22;
 }
+
     </style>
     <script src="http://connect.soundcloud.com/sdk.js"></script>
     <script src="terminal/js/jquery-1.7.1.min.js"></script>
