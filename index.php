@@ -117,16 +117,15 @@ a:hover {
     //    alert('Hello, ' + me.username); 
     //  });
     //});
-    
-    
-	
-	//declare global variables
+
 	//queue holds the track_ids that are pending on the playlist
 	var queue = [];
 	//queue strings holds the formatted strings from the queue
 	var queueStrings = [];
 	//queue loop boolean - if 1 will loop the queue instead of retiring played tracks, default 0 (off)
 	var queueLoop = 0;
+	//repeat, boolean - if 1 it will loop the track instead of moving on the next track, default is 0 (off)
+	var repeat = 0;
 	
 	var followers_ids = [];
 	var currentTrack = {
@@ -233,10 +232,14 @@ $(function() {
 						position: currentTrack['trackPosition'],
                         onfinish: function() {
                             term.echo("Song finished playing.");
-							
-                            //play next track in queue
-							if (queue.length > 0) {	
-								playNextTrack();
+							if (repeat == 0) {
+								//play next track in queue
+								if (queue.length > 0) {	
+									playNextTrack();
+								}
+							} else {
+								term.echo("Repeat is on. Playing track from beginning.");
+								playTrack(currentTrack['trackId']);
 							}
                         }
                     });
@@ -624,6 +627,7 @@ $(function() {
             term.echo("stop - stop currently playing track and reset the track position to the beginning.");
 			term.echo("pause - pause current track at its current playing position (use play to resume).");
 			term.echo("next - skip current track and play the next song in the queue");
+			term.echo("repeat - turn track repeat on or off using 'repeat on' or 'repeat off' (alternatively use 1 or 0 e.g. 'repeat 1').");
 			term.echo("queue [help] - display the play queue. (search for the track id using the tracks command).");
             term.echo("login - prompt for user login via soundcloud connect popup (this enables more commands!)");
             
@@ -698,6 +702,23 @@ $(function() {
 		if(cmd.split(" ")[0] == 'next') {
 			stopTrack();
 			playNextTrack();
+		}
+		if(cmd.split(" ")[0] == 'repeat') {
+			if (cmd.split(" ")[1] == 'on' || cmd.split(" ")[1] == 1) {
+				//turn repeat on
+				repeat = 1;
+				term.echo("Repeat: on");
+			} else if (cmd.split(" ")[1] == 'off' || cmd.split(" ")[1] == 0) {
+				//turn repeat off
+				repeat = 0;
+				term.echo("Repeat: off");
+			} else {
+				if (repeat == 0) {
+					term.echo("Repeat: off");
+				} else if (repeat == 1) {
+					term.echo("Repeat: on");
+				}
+			}
 		}
 		if(cmd.split(" ")[0] == 'comment' && loggedIn == 1) {
 			if(cmd.split(" ").length == 1 || cmd.split(" ")[1] == "help") {
