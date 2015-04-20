@@ -126,6 +126,8 @@ a:hover {
 	var queueLoop = 0;
 	//repeat, boolean - if 1 it will loop the track instead of moving on the next track, default is 0 (off)
 	var repeat = 0;
+	//showLinks, boolean - if 0 it will not display links, default is 1 (on)
+	var showLinks = 1;
 	
 	var followers_ids = [];
 	var currentTrack = {
@@ -186,8 +188,10 @@ $(function() {
 		//I was forced to move this to a separate function to resolve a race condition
 		function queueDisplay(queue_id, track_id) {
 				SC.get("/tracks/" + track_id, function(track) {
-					queueStrings[queue_id] = ("[[;"+ theme['quickIdColor'] +";]" + (queue_id + 1) + ")] [[;"+ theme['trackIdColor'] +";]" + track_id + "] - [[;"+ theme['artistIdColor'] +";]" + track.user.username + "] - " + track.title + "\n\tlink: " + track.permalink_url);
-					
+					queueStrings[queue_id] = ("[[;"+ theme['quickIdColor'] +";]" + (queue_id + 1) + ")] [[;"+ theme['trackIdColor'] +";]" + track_id + "] - [[;"+ theme['artistIdColor'] +";]" + track.user.username + "] - " + track.title);
+					if (showLinks == 1) {
+						term.echo("\tlink: " + track.permalink_url);
+					}
 					//this is the most sane way to make sure that the entire queue is sent to the output
 					//it has to be done within SC.get on the last track
 					//I can potentially imagine a situation where one of the SC.get calls does not come back in time though, but it should work *most* of the time
@@ -472,7 +476,10 @@ $(function() {
                     searchTracks = [];
                     for (i = 0; i < tracks.length; i++) {
                         if (tracks[i].title.toLowerCase().search(searchString.toLowerCase()) >= 0 || tracks[i].tag_list.toLowerCase().search(searchString.toLowerCase()) >= 0) {
-                            term.echo((i+1) + ") " + tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title + ' \n\tlink:' + tracks[i].permalink_url);
+                            term.echo((i+1) + ") " + tracks[i].id + " - " + tracks[i].user.username  + " - " + tracks[i].title);
+							if (showLinks == 1) {
+								term.echo('\tlink:' + tracks[i].permalink_url);
+							}
                             searchTracks[i] = tracks[i].id;
                         }
                     }
@@ -486,7 +493,7 @@ $(function() {
 				}
 				
 				//hopefully this should echo 1-20, 21-40, 41-60, etc
-                term.echo("Tracks " + ((20 * (moreArray['page'])) + 1) + "-" + (20 * (moreArray['page'] + 1)) + ":");
+                term.echo("Tracks " + ((page_size * (moreArray['page'])) + 1) + "-" + (page_size * (moreArray['page'] + 1)) + ":");
 				
 				//uncomment for debugging
 				//term.echo("tempAPIURL == " + moreArray['tempAPIURL']);
@@ -588,7 +595,10 @@ $(function() {
 			
             //output the list of tracks
             for (i = 0; i < page_size; i++) {
-				term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" + theListOfTracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title + ' \n\tlink:' + theListOfTracks[i].permalink_url);                
+				term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" + theListOfTracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title);
+				if (showLinks == 1) {
+					term.echo('\tlink:' + theListOfTracks[i].permalink_url);
+				}
                 searchTracks[i] = theListOfTracks[i].id;
             }
 		}
@@ -610,7 +620,47 @@ $(function() {
 			moreArray['page']++;
 		}
 		
+		function linksOff(arg1) {
+			if (arg1 == 'off') {
+				term.echo('\nDisclaimer: turning off links may break the Soundcloud terms of usage (attribution iii). \n' +
+					             'See: https://developers.soundcloud.com/docs/api/terms-of-use#branding \n' +
+								 'This option does not turn off all links, but it is intended to improve readability of tracks and queue commands. \n' +
+								 'By turning links off you acknowledge this and absolve the website developer of any responsibility.' +
+								 'You may turn links back on using the "links on" command. \n\n');
+				term.push(function(command) {
+					if (command.match(/y|yes/i)) {
+						turnLinksOff();
+						term.pop();
+					} else if (command.match(/n|no/i)) {
+						turnLinksOff();
+						term.pop();
+					}
+				}, {
+					prompt: 'Are you sure that you wish to continue? (y/n): ', 
+				});
+			} else if (arg1 == 'on') {
+				showLinks = 1;
+				term.echo("Links: on");
+			} else {
+				if (showLinks == 0) {
+					term.echo("Links: off");
+				} else if (showLinks == 1) {
+					term.echo("Links: on");
+				}
+			}
+		}
 		
+		function turnLinksOn() {
+			showLinks = 1;
+			page_size = 20;
+			term.echo("Links: on");
+		}
+		
+		function turnLinksOff() {
+			showLinks = 0;
+			page_size = 40;
+			term.echo("Links: off");
+		}
 		
         //command interpreter here
         if (cmd.split(" ")[0] == 'help') {
@@ -623,6 +673,7 @@ $(function() {
 			term.echo("facebook - redirect to >ENCODER LOGIC_ Facebook page.");
             term.echo("tracks [help] - display latest uploaded tracks.");
 			term.echo("more - display the next page of tracks (you have to run 'tracks' first, obviously)");
+			term.echo("links [on|off] - turn on or off links from the tracks and queue commands. (Doubles page size.)");
             term.echo("play [help] - play a track (search for the track id using the tracks command).");
             term.echo("stop - stop currently playing track and reset the track position to the beginning.");
 			term.echo("pause - pause current track at its current playing position (use play to resume).");
@@ -854,6 +905,9 @@ $(function() {
 			//				term.echo("Current track successfully liked.");
 			//		}
 			//});
+		}
+		if(cmd.split(" ")[0] == 'links') {
+			linksOff(cmd.split(" ")[1]);
 		}
 },{
         prompt: '[anonymous@Encoder Logic]>',
