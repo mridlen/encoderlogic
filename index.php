@@ -192,7 +192,7 @@ $(function() {
 				SC.get("/tracks/" + track_id, function(track) {
 					queueStrings[queue_id] = ("[[;"+ theme['quickIdColor'] +";]" + (queue_id + 1) + ")] [[;"+ theme['trackIdColor'] +";]" + track_id + "] - [[;"+ theme['artistIdColor'] +";]" + track.user.username + "] - " + track.title);
 					if (showLinks == 1) {
-						term.echo("\tlink: " + track.permalink_url);
+						queueStrings[queue_id] += "\n\tlink: " + track.permalink_url;
 					}
 					//this is the most sane way to make sure that the entire queue is sent to the output
 					//it has to be done within SC.get on the last track
