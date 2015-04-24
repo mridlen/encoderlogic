@@ -14,11 +14,7 @@
     <link rel="stylesheet" href="terminal/css/droidsansmono_regular_macroman/stylesheet.css" type="text/css" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="terminal.css" />
     
-    <script src="http://connect.soundcloud.com/sdk.js"></script>
-    <script src="terminal/js/jquery-1.7.1.min.js"></script>
-	<script src="terminal/js/jquery.terminal-src.js"></script>
-    
-    <!-- using modules/main.js to load up all the custom commands for this terminal -->
+    <!-- using modules/main.js to load up all the javascript for this terminal -->
     <script data-main="modules/main" src="modules/require.js"></script>
 	
 </head>
