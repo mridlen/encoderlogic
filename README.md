@@ -52,6 +52,9 @@ $ curl -v 'http://api.soundcloud.com/resolve.json?url=http://soundcloud.com/enco
 * Connection #0 to host api.soundcloud.com left intact
 * Closing connection #0
 {"status":"302 - Found","location":"https://api.soundcloud.com/users/14947567.json?client_id=8c3cf644ea6051b32f5e612143e203e9"}
+
+
+My soundcloudUserID is 14947567
 ```
 
 There are also a number of things you will need to modify in the modules/terminal.js to personalize it (e.g. create your own links section, soundcloud and facebook urls, etc), but it should be fairly obvious what you need to change.
