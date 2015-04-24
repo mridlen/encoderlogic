@@ -27,6 +27,8 @@ You will need to update the Client ID and Redirect URI, soundcloudUserID and sou
 
 Use this command, replacing "encoder-logic" with the URL of your artist name and the client_id with your client_id from the soundcloud apps page:
 
+(look for: https://api.soundcloud.com/users/<THIS IS YOUR USER ID>)
+
 ```
 $ curl -v 'http://api.soundcloud.com/resolve.json?url=http://soundcloud.com/encoder-logic&client_id=8c3cf644ea6051b32f5e612143e203e9'
 * About to connect() to api.soundcloud.com port 80 (#0)
@@ -52,9 +54,6 @@ $ curl -v 'http://api.soundcloud.com/resolve.json?url=http://soundcloud.com/enco
 * Connection #0 to host api.soundcloud.com left intact
 * Closing connection #0
 {"status":"302 - Found","location":"https://api.soundcloud.com/users/14947567.json?client_id=8c3cf644ea6051b32f5e612143e203e9"}
-
-
-My soundcloudUserID is 14947567
 ```
 
 There are also a number of things you will need to modify in the modules/terminal.js to personalize it (e.g. create your own links section, soundcloud and facebook urls, etc), but it should be fairly obvious what you need to change.
