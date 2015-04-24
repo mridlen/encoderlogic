@@ -27,7 +27,7 @@ You will need to update the Client ID and Redirect URI, soundcloudUserID and sou
 
 Use this command, replacing "encoder-logic" with the URL of your artist name and the client_id with your client_id from the soundcloud apps page:
 
-(look for: https://api.soundcloud.com/users/<THIS IS YOUR USER ID>)
+(look for: https://api.soundcloud.com/users/##########, THIS IS YOUR USER ID!)
 
 ```
 $ curl -v 'http://api.soundcloud.com/resolve.json?url=http://soundcloud.com/encoder-logic&client_id=8c3cf644ea6051b32f5e612143e203e9'
