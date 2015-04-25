@@ -7,7 +7,6 @@ $(function() {
 			require(['interpreter']);
 		});
 		
-		
 
 	},{
         prompt: '[anonymous@Encoder Logic]>',
