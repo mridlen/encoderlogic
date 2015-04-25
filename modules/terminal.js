@@ -505,9 +505,8 @@ $(function() {
 			term.echo("Links: off");
 		}
 		
-        //command interpreter here
-        if (cmd.split(" ")[0] == 'help') {
-            term.echo("\n=== Available commands ===\n");
+		function help() {
+			term.echo("\n=== Available commands ===\n");
 			
             term.echo("help - displays this menu.");
 			term.echo("about - displays websites, links and information.");
@@ -534,6 +533,11 @@ $(function() {
 				term.echo("stream - display the tracks in your stream");
              }   
 			term.echo("");
+		}
+		
+        //command interpreter here
+        if (cmd.split(" ")[0] == 'help') {
+            help();
 		}
         if (cmd.split(" ")[0] == 'soundcloud') {
             window.location = "http://soundcloud.com/encoder-logic";
