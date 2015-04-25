@@ -7,6 +7,12 @@ SC.initialize({
 var soundcloudUserId = 14947567;
 var soundcloudUserName = "Encoder Logic";
 
+//this is used for the "soundcloud" command
+var soundcloudURL = "http://soundcloud.com/encoder-logic";
+
+//this is used for the "facebook" command
+var facebookURL = "http://facebook.com/encoder-logic";
+
 //the client is for the connecting user (the one who is looking at the webpage)
 var soundcloudUserIdClient = 0;
 var soundcloudUserNameClient = "anonymous";

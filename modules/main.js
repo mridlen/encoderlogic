@@ -16,7 +16,7 @@ require(['jquery'], function(jquery) {
     //then jquery terminal and soundcloud can be loaded
     require(['jqueryterminal', 'soundcloud'], function (jqueryterminal, soundcloud) {
         //then globals and terminal can be loaded
-        require(['globals', 'terminal']);   
+        require(['globals', 'terminal']);
     }); 
 });
 
