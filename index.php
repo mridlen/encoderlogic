@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <title></title>
+    <title>&gt;ENCODER LOGIC_</title>
     <meta name="Description" content=""/>
     <link rel="shortcut icon" href=""/>
     <!--[if IE]>
