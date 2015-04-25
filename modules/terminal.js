@@ -4,7 +4,9 @@ $(function() {
 		//this require loads the functions.js which in turn loads all the command functions (most of the useful code)
 		require(['functions'], function (functions) {
 			//the command interpreter handles the text input and some basic validation
-			require(['interpreter']);
+			require(['interpreter'], function (interpreter) {
+				interpretCommand(cmd, term);
+			});
 		});
 		
 

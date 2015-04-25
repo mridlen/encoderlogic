@@ -1,4 +1,4 @@
-function help() {
+function help(term) {
 	term.echo("\n=== Available commands ===\n");
 	
 	term.echo("help - displays this menu.");

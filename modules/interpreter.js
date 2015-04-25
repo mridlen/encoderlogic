@@ -1,8 +1,9 @@
 //command interpreter
 //if you want to add commands, just add another else if to the end
+function interpretCommand(cmd, term) {
 
 if (cmd.split(" ")[0] == 'help') {
-	help();
+	help(term);
 } else if (cmd.split(" ")[0] == 'soundcloud') {
 	soundcloud();
 } else if (cmd.split(" ")[0] == 'facebook') {
@@ -47,4 +48,6 @@ if (cmd.split(" ")[0] == 'help') {
 	like();
 } else if(cmd.split(" ")[0] == 'links') {
 	links(cmd.split(" ")[1]);
+}
+
 }
