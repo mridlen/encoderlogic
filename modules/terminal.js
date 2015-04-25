@@ -463,7 +463,7 @@ $(function() {
 			moreArray['page']++;
 		}
 		
-		function linksOff(arg1) {
+		function links(arg1) {
 			if (arg1 == 'off') {
 				term.echo('\nDisclaimer: turning off links may break the Soundcloud terms of usage (attribution iii). \n' +
 					             'See: https://developers.soundcloud.com/docs/api/terms-of-use#branding \n' +
@@ -535,17 +535,15 @@ $(function() {
 			term.echo("");
 		}
 		
-        //command interpreter here
-        if (cmd.split(" ")[0] == 'help') {
-            help();
+		function soundcloud () {
+			window.location = "http://soundcloud.com/encoder-logic";
 		}
-        if (cmd.split(" ")[0] == 'soundcloud') {
-            window.location = "http://soundcloud.com/encoder-logic";
-        }
-		if (cmd.split(" ")[0] == 'facebook') {
-            window.location = "http://facebook.com/encoder-logic";
-        }
-		if (cmd.split(" ")[0] == 'about') {
+		
+		function facebook() {
+			window.location = "http://facebook.com/encoder-logic";
+		}
+		
+		function about() {
 			term.echo("\n");
             term.echo("Mark Ridlen is in a number of different projects");
 			term.echo("================================================");
@@ -565,48 +563,41 @@ $(function() {
 			term.echo("\tlink: http://www.soundclick.com/introspectivejourneys");
 			term.echo("\tlink: http://introspectivejourneys.bandcamp.com/");
 			term.echo("");
-        }
-        if (cmd.split(" ")[0] == 'tracks' || cmd.split(" ")[0] == 'stream' || cmd.split(" ")[0] == 'more') {
-            tracks(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" search ")[1]);
-        } 
-        if (cmd.split(" ")[0] == 'follow' && loggedIn == 1) {
-			if (cmd.split(" ")[1] == 'track') {
+		}
+		
+		function followVerify() {
+			//this function is not working yet
+			SC.get("/users/" + soundcloudUserIdClient + "/followings/" + soundcloudUserId, function(verify, error) {
+				if(error) {
+					term.echo("Error: " + error.message);
+				} else {
+					term.echo("Current artist " + verify.username + " successfully followed.");
+				}
+			});
+		}
+		
+		function follow(trackId) {
+			if (trackId == 'track') {
 				SC.get("/tracks/" + currentTrack['id'], function(track) {
 					term.echo("Following " + track.user.username + ".");
 					SC.put('/me/followings/' + track.user.id);
+					//follow verify is not working yet
+					//followVerify();
 				});
 			} else {
-				term.echo("Following " + soundcloudUserId);
+				term.echo("Following " + soundcloudUserName);
 				SC.put('/me/followings/' + soundcloudUserId);
+				//follow verify is not working yet
+				//followVerify();
 			}
-			//this section is not working yet!!
-			//SC.get("/user/" + soundcloudUserIdClient + "/followings/0", function(follows) {
-			//		if(follows.id == soundcloudUserId) {
-			//				term.echo("Current artist successfully followed");
-			//		}
-			//});
-        }
-		if (cmd.split(" ")[0] == 'play') {
-			//"play" is ingeniously supplied in cmd.split(" ")[0] so that what the user typed is actually supplied to the "queue help" or "play help" menu
-            playOrQueue(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" ")[2]);
 		}
-		if (cmd.split(" ")[0] == 'stop') {
-			stopTrack();
-			currentTrack['trackPosition'] = 0;
-		}
-		if (cmd.split(" ")[0] == 'pause') {
-			pauseTrack();
-		}
-		if(cmd.split(" ")[0] == 'next') {
-			stopTrack();
-			playNextTrack();
-		}
-		if(cmd.split(" ")[0] == 'repeat') {
-			if (cmd.split(" ")[1] == 'on' || cmd.split(" ")[1] == 1) {
+		
+		function repeat(status) {
+			if (status == 'on' || status == 1) {
 				//turn repeat on
 				repeat = 1;
 				term.echo("Repeat: on");
-			} else if (cmd.split(" ")[1] == 'off' || cmd.split(" ")[1] == 0) {
+			} else if (status == 'off' || status == 0) {
 				//turn repeat off
 				repeat = 0;
 				term.echo("Repeat: off");
@@ -618,7 +609,8 @@ $(function() {
 				}
 			}
 		}
-		if(cmd.split(" ")[0] == 'comment' && loggedIn == 1) {
+		
+		function comment(cmd) {
 			if(cmd.split(" ").length == 1 || cmd.split(" ")[1] == "help") {
 				term.echo("");
 				term.echo("syntax:");
@@ -647,7 +639,8 @@ $(function() {
 				);
 			}
 		}
-		if (cmd.split(" ")[0] == 'api') {
+		
+		function api(cmd) {
 			//this api command is reserved for temporary testing of new features
 			//this is undocumented, so if you have found this command, use at your own risk, because it may break something!
 			for (o = 0; o < 5000; o = o + 50) {
@@ -667,13 +660,9 @@ $(function() {
 			for (i = 0; i < followers_ids.length; i++) {
 				term.echo(followers_ids[i]);
 			}
-        }
-		if (cmd.split(" ")[0] == 'queue') {
-            //queue is exactly like play except that we use the queueTrack instead of playTrack function
-			//"queue" is ingeniously supplied in cmd.split(" ")[0] so that what the user typed is actually supplied to the "queue help" or "play help" menu
-            playOrQueue(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" ")[2]);
 		}
-		if(cmd.split(" ")[0] == 'artist') {
+		
+		function artist(cmd) {
 			if (cmd.split(" ")[1] == 'help') {
 				term.echo("");
 				term.echo("Syntax: ");
@@ -704,8 +693,9 @@ $(function() {
                 });
             }
 		}
-        if(cmd.split(" ")[0] == 'login') {
-            SC.connect(function() {
+		
+		function login() {
+			SC.connect(function() {
                 SC.get("/me", function(me){
                     if(typeof me.username !== 'undefined') {
                         SC.get("/users/" + soundcloudUserId, function(user) {
@@ -732,18 +722,21 @@ $(function() {
                     }
                 });
             });
-        }
-        if(cmd.split(" ")[0] == 'logout' && loggedIn == 1) {
-            location.reload(true);
-        }
-        if(cmd.split(" ")[0] == 'whoami' && loggedIn == 1) {
-
-            SC.get("/me", function(me){
+		}
+		
+		function logout() {
+			 location.reload(true);
+		}
+		
+		//the whoami function may be deprecated because the user name is displayed via the command prompt
+		function whoami() {
+			SC.get("/me", function(me){
                 term.echo("User: " + me.username);
             });
 		}
-		if(cmd.split(" ")[0] == 'like' && loggedIn == 1) {
-            term.echo("Liking current track: " + currentTrack['trackId']);
+		
+		function like() {
+			term.echo("Liking current track: " + currentTrack['trackId']);
 			SC.put("/me/favorites/" + currentTrack['trackId']);
 			
             //this part hasn't been fixed yet
@@ -753,8 +746,54 @@ $(function() {
 			//		}
 			//});
 		}
-		if(cmd.split(" ")[0] == 'links') {
-			linksOff(cmd.split(" ")[1]);
+		
+        //command interpreter here
+        if (cmd.split(" ")[0] == 'help') {
+            help();
+		} else if (cmd.split(" ")[0] == 'soundcloud') {
+            soundcloud();
+        } else if (cmd.split(" ")[0] == 'facebook') {
+            facebook();
+        } else if (cmd.split(" ")[0] == 'about') {
+			about();
+        } else if (cmd.split(" ")[0] == 'tracks' || cmd.split(" ")[0] == 'stream' || cmd.split(" ")[0] == 'more') {
+            tracks(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" search ")[1]);
+        } else if (cmd.split(" ")[0] == 'follow' && loggedIn == 1) {
+			follow(cmd.split(" ")[1]);
+        } else if (cmd.split(" ")[0] == 'play') {
+			//"play" is ingeniously supplied in cmd.split(" ")[0] so that what the user typed is actually supplied to the "queue help" or "play help" menu
+            playOrQueue(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" ")[2]);
+		} else if (cmd.split(" ")[0] == 'stop') {
+			stopTrack();
+			currentTrack['trackPosition'] = 0;
+		} else if (cmd.split(" ")[0] == 'pause') {
+			pauseTrack();
+		} else if(cmd.split(" ")[0] == 'next') {
+			stopTrack();
+			playNextTrack();
+		} else if(cmd.split(" ")[0] == 'repeat') {
+			repeat(cmd.split(" ")[1]);
+		} else if(cmd.split(" ")[0] == 'comment' && loggedIn == 1) {
+			//just for simplicity I'll pass it the entire command
+			comment(cmd);
+		} else if (cmd.split(" ")[0] == 'api') {
+			api(cmd);
+        } else if (cmd.split(" ")[0] == 'queue') {
+            //queue is exactly like play except that we use the queueTrack instead of playTrack function
+			//"queue" is ingeniously supplied in cmd.split(" ")[0] so that what the user typed is actually supplied to the "queue help" or "play help" menu
+            playOrQueue(cmd.split(" ")[0], cmd.split(" ")[1], cmd.split(" ")[2]);
+		} else if(cmd.split(" ")[0] == 'artist') {
+			artist(cmd);
+		} else if(cmd.split(" ")[0] == 'login') {
+            login();
+        } else if(cmd.split(" ")[0] == 'logout' && loggedIn == 1) {
+			logout();
+        } else if(cmd.split(" ")[0] == 'whoami' && loggedIn == 1) {
+			whoami();
+		} else if(cmd.split(" ")[0] == 'like' && loggedIn == 1) {
+            like();
+		} else if(cmd.split(" ")[0] == 'links') {
+			links(cmd.split(" ")[1]);
 		}
 },{
         prompt: '[anonymous@Encoder Logic]>',
