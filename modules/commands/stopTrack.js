@@ -1,4 +1,4 @@
-function stopTrack(){
+function stopTrack(term){
 	term.echo("Stopping track.");
 	
 	//stop all timed comments

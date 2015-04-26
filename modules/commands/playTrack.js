@@ -1,5 +1,5 @@
 //a function to play tracks and work with the queue
-function playTrack(track_id) {
+function playTrack(track_id, term) {
 	//track_id = cmd.split(" ")[1];
 	if (!isNaN(track_id)) {
 		SC.stream("/tracks/" + track_id, function(sound){
@@ -33,15 +33,15 @@ function playTrack(track_id) {
 					if (repeat == 0) {
 						//play next track in queue
 						if (queue.length > 0) {	
-							playNextTrack();
+							playNextTrack(term);
 						}
 					} else {
 						term.echo("Repeat is on. Playing track from beginning.");
-						playTrack(currentTrack['trackId']);
+						playTrack(currentTrack['trackId'], term);
 					}
 				}
 			});
-			displayTimedComments(track_id, currentTrack['trackPosition']);
+			displayTimedComments(track_id, currentTrack['trackPosition'], term);
 
 			//sound.onfinish(function() {
 			//    term.echo("Song finished playing.");

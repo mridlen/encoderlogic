@@ -1,4 +1,4 @@
-function moreTracksTracks() {
+function moreTracksTracks(term) {
 	var theListOfTracks = [];
 	$.getJSON(moreArray['nextPageURL'], function( tracks ) {
 		for (i = 0; i < page_size; i++) {
@@ -9,7 +9,7 @@ function moreTracksTracks() {
 				permalink_url: tracks.collection[i].permalink_url
 			};
 		}
-		formatTracks(theListOfTracks);
-		getNextHref(tracks.next_href);
+		formatTracks(theListOfTracks, term);
+		getNextHref(tracks.next_href, term);
 	});
 }

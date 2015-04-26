@@ -1,4 +1,4 @@
-function login() {
+function login(term) {
 	SC.connect(function() {
 		SC.get("/me", function(me){
 			if(typeof me.username !== 'undefined') {

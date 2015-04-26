@@ -1,4 +1,4 @@
-function getNextHref(next_href) {
+function getNextHref(next_href, term) {
 	 //load the next_href
 	if (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") { // i.e. stream
 		//uncomment for debugging

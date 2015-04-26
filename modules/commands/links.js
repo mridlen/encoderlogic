@@ -1,4 +1,4 @@
-function links(arg1) {
+function links(arg1, term) {
 	if (arg1 == 'off') {
 		term.echo('\nDisclaimer: turning off links may break the Soundcloud terms of usage (attribution iii). \n' +
 						 'See: https://developers.soundcloud.com/docs/api/terms-of-use#branding \n' +
@@ -7,10 +7,10 @@ function links(arg1) {
 						 'You may turn links back on using the "links on" command. \n\n');
 		term.push(function(command) {
 			if (command.match(/y|yes/i)) {
-				turnLinksOff();
+				turnLinksOff(term);
 				term.pop();
 			} else if (command.match(/n|no/i)) {
-				turnLinksOff();
+				turnLinksOn(term);
 				term.pop();
 			}
 		}, {

@@ -1,4 +1,4 @@
-function follow(trackId) {
+function follow(trackId, term) {
 	if (trackId == 'track') {
 		SC.get("/tracks/" + currentTrack['id'], function(track) {
 			term.echo("Following " + track.user.username + ".");

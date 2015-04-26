@@ -1,4 +1,4 @@
-function queueDisplay(queue_id, track_id) {
+function queueDisplay(queue_id, track_id, term) {
 		SC.get("/tracks/" + track_id, function(track) {
 			queueStrings[queue_id] = ("[[;"+ theme['quickIdColor'] +";]" + (queue_id + 1) + ")] [[;"+ theme['trackIdColor'] +";]" + track_id + "] - [[;"+ theme['artistIdColor'] +";]" + track.user.username + "] - " + track.title);
 			if (showLinks == 1) {

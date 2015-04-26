@@ -1,4 +1,4 @@
-function about() {
+function about(term) {
 	term.echo("\n");
 	term.echo("Mark Ridlen is in a number of different projects");
 	term.echo("================================================");

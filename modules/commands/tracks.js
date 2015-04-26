@@ -1,4 +1,4 @@
-function tracks(arg0, arg1, searchString) {
+function tracks(arg0, arg1, searchString, term) {
 	//build the API query depending on the command used
 	if (arg0 == 'tracks') {
 		moreArray['tempAPIURL'] = "/users/" + soundcloudUserId + "/tracks";
@@ -54,6 +54,6 @@ function tracks(arg0, arg1, searchString) {
 		//uncomment for debugging
 		//term.echo("tempAPIURL == " + moreArray['tempAPIURL']);
 		
-		listTracks(arg0);
+		listTracks(arg0, term);
 	}
 }

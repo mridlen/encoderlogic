@@ -1,4 +1,4 @@
-function artist(cmd) {
+function artist(cmd, term) {
 	if (cmd.split(" ")[1] == 'help') {
 		term.echo("");
 		term.echo("Syntax: ");
@@ -8,13 +8,17 @@ function artist(cmd) {
 		term.echo("\tartist switch 3");
 		term.echo("");
 	} else if (cmd.split(" ")[1] == 'search') {
-		term.echo("searching for: " + cmd.split(" search ")[1]);
-		SC.get("/users", { limit: 20, q: cmd.split(" search ")[1] }, function(artists) {
-			for(i = 0; i < artists.length; i++) {
-				term.echo("[[;" + theme['quickIdColor'] + ";]" + (i+1) + ")] [[;" + theme['artistIdColor'] + ";]" + artists[i].username + "]");
-				searchArtists[i] = artists[i].id;
-			}
-		});
+		if (typeof cmd.split(" ")[2] != 'undefined') {
+			term.echo("searching for: " + cmd.split(" search ")[1]);
+			SC.get("/users", { limit: 20, q: cmd.split(" search ")[1] }, function(artists) {
+				for(i = 0; i < artists.length; i++) {
+					term.echo("[[;" + theme['quickIdColor'] + ";]" + (i+1) + ")] [[;" + theme['artistIdColor'] + ";]" + artists[i].username + "]");
+					searchArtists[i] = artists[i].id;
+				}
+			});
+		} else {
+			term.echo("Please enter a search string. E.g. 'artist search encoder logic'");
+		}
 	} else if(cmd.split(" ")[1] == 'switch') {
 		soundcloudUserId = searchArtists[cmd.split(" ")[2] - 1];
 		SC.get("/users/" + soundcloudUserId, function(user) {

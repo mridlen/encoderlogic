@@ -1,4 +1,4 @@
-function queueTrack(track_id) {
+function queueTrack(track_id, term) {
 	if (typeof track_id !== 'undefined') {
 		SC.get("/tracks/" + track_id, function (track) {
 			term.echo("Adding track to end of queue: " + track.user.username + " - " + track.title + " - link:" + track.permalink_url);
@@ -11,7 +11,7 @@ function queueTrack(track_id) {
 		
 		
 		for (i = 0; i < queue.length; i++) {
-			queueDisplay(i, queue[i]);
+			queueDisplay(i, queue[i], term);
 		}
 		
 		

@@ -1,4 +1,4 @@
-function followVerify() {
+function followVerify(term) {
 	//this function is not working yet
 	SC.get("/users/" + soundcloudUserIdClient + "/followings/" + soundcloudUserId, function(verify, error) {
 		if(error) {

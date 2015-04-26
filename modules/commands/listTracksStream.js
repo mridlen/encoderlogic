@@ -1,4 +1,4 @@
-function listTracksStream() {
+function listTracksStream(term) {
 	var theListOfTracks = [];
 	SC.get(moreArray['tempAPIURL'], { limit: page_size, linked_partitioning: 1 }, function (tracks) {
 		for (i = 0; i < page_size; i++) {
@@ -9,7 +9,7 @@ function listTracksStream() {
 				permalink_url: tracks.collection[i].origin.permalink_url
 			};
 		}
-		formatTracks(theListOfTracks);
-		getNextHref(tracks.next_href);
+		formatTracks(theListOfTracks, term);
+		getNextHref(tracks.next_href, term);
 	});
 }

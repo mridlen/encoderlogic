@@ -1,4 +1,4 @@
-function listTracks(arg0) {
+function listTracks(arg0, term) {
 	//clear searchTracks[]
 	searchTracks = [];
 	
@@ -6,16 +6,16 @@ function listTracks(arg0) {
 	//we will be dumping the list of tracks into theListOfTracks
 	if (arg0 != 'more') { //arg0 == 'stream' || arg0 == 'tracks'
 		if(moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") {
-			listTracksStream();
+			listTracksStream(term);
 		} else {
-			listTracksTracks();
+			listTracksTracks(term);
 		}
 	} else { //arg0 == 'more'
 	//the only reason we care if arg0 == 'more' is because we have use a different method to query the API
 		if(moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated") {
-			moreTracksStream();
+			moreTracksStream(term);
 		} else {
-			moreTracksTracks();
+			moreTracksTracks(term);
 		}
 	}
 }

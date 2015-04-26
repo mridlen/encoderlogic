@@ -1,4 +1,4 @@
-function repeat(status) {
+function repeatModify(status, term) {
 	if (status == 'on' || status == 1) {
 		//turn repeat on
 		repeat = 1;

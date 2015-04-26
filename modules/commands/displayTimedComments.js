@@ -1,4 +1,4 @@
-function displayTimedComments(track_id, offset) {
+function displayTimedComments(track_id, offset, term) {
 	//uncomment for debugging:
 	//term.echo("track_id: " + track_id);
 	if (!isNaN(track_id) && !isNaN(offset)) {
@@ -14,7 +14,7 @@ function displayTimedComments(track_id, offset) {
 				//uncomment for debugging:
 				//term.echo(i + " " + replyOffset + " " + comments[i].user.username + " " + comments[i].body);
 				if (replyOffset > 0) {
-					timedComment (i, replyOffset, comments[i].user.username, comments[i].body);
+					timedComment (i, replyOffset, comments[i].user.username, comments[i].body, term);
 				}
 			}
 		});

@@ -1,4 +1,4 @@
-function like() {
+function like(term) {
 	term.echo("Liking current track: " + currentTrack['trackId']);
 	SC.put("/me/favorites/" + currentTrack['trackId']);
 	

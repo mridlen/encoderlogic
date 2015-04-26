@@ -1,3 +1,3 @@
-function logout() {
+function logout(term) {
 	 location.reload(true);
 }

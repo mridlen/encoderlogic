@@ -1,4 +1,4 @@
-function pauseTrack() {
+function pauseTrack(term) {
 	//the amount of time elapsed since the track was played and then stopped
 	var timeElapsed = Date.now() - currentTrack['startedTimestamp'];
 	
@@ -6,5 +6,5 @@ function pauseTrack() {
 	currentTrack['trackPosition'] = currentTrack['trackPosition'] + timeElapsed;
 	
 	term.echo("Track paused at " + currentTrack['trackPosition']);
-	stopTrack();
+	stopTrack(term);
 }

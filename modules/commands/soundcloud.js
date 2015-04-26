@@ -1,3 +1,3 @@
-function soundcloud () {
+function soundcloud (term) {
 	window.location = soundcloudURL;
 }

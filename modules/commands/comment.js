@@ -1,4 +1,4 @@
-function comment(cmd) {
+function comment(cmd, term) {
 	if(cmd.split(" ").length == 1 || cmd.split(" ")[1] == "help") {
 		term.echo("");
 		term.echo("syntax:");

@@ -1,4 +1,4 @@
-function api(cmd) {
+function api(cmd, term) {
 	//this api command is reserved for temporary testing of new features
 	//this is undocumented, so if you have found this command, use at your own risk, because it may break something!
 	for (o = 0; o < 5000; o = o + 50) {

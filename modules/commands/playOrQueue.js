@@ -1,4 +1,4 @@
-function playOrQueue(arg0, arg1, arg2) {
+function playOrQueue(arg0, arg1, arg2, term) {
 	if (arg0 == 'queue' && arg1 == 'clear') {
 		//"queue clear" command...
 		//clear out the queue array
@@ -70,9 +70,9 @@ function playOrQueue(arg0, arg1, arg2) {
 		//if "track id <id>" is specified, then play the track id
 		//otherwise we will use the quick play id
 		if(arg0 == 'play') {
-			playTrack(arg2);
+			playTrack(arg2, term);
 		} else if (arg0 == 'queue') {
-			queueTrack(arg2);
+			queueTrack(arg2, term);
 		}
 	} else if (typeof arg1 !== 'undefined') {
 		//term.echo("Using quick play id...");
@@ -83,18 +83,18 @@ function playOrQueue(arg0, arg1, arg2) {
 			//term.echo("quick play id supplied: " + (arg1));
 			
 			if(arg0 == 'play') {
-				playTrack(searchTracks[(arg1 - 1)]);
+				playTrack(searchTracks[(arg1 - 1)], term);
 			} else if (arg0 == 'queue') {
-				queueTrack(searchTracks[(arg1 - 1)]);
+				queueTrack(searchTracks[(arg1 - 1)], term);
 			}
 			
 		} else {
 			term.echo("1-" + trackLimit + " range exceeded, playing track id instead");
 			//play the track id if out of the 1-trackLimit safety range
 			if(arg0 == 'play') {
-				playTrack(arg1);
+				playTrack(arg1, term);
 			} else if (arg0 == 'queue') {
-				queueTrack(arg1);
+				queueTrack(arg1, term);
 			}
 		}
 	} else if (typeof arg1 === 'undefined') {
@@ -102,10 +102,10 @@ function playOrQueue(arg0, arg1, arg2) {
 			if (arg0 == 'play' && currentTrack['trackId'] !== 0) {
 				term.echo("Playing previously stopped track from beginning.");
 				term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
-				playTrack(currentTrack['trackId']);
+				playTrack(currentTrack['trackId'], term);
 			} else if (arg0 == 'queue') {
 				//this will display the queue
-				queueTrack();
+				queueTrack(term);
 			}
 		
 	}
