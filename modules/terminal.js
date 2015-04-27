@@ -2,7 +2,13 @@ $(function() {
     $('#term').terminal(function(cmd, term) {
         
 		//this require loads the functions.js which in turn loads all the command functions (most of the useful code)
-		require(['functions'], function (functions) {
+		//the commands in the commands directory are now loaded dynamically using the directory_listing.php script
+        $.getJSON( "modules/directory_listing.php", function (dir) {
+            //debugging
+            //console.log(dir);
+            for (i = 0; i < dir.length; i++) {
+                require(['commands/' + dir[i]]);
+            }
 			//the command interpreter handles the text input and some basic validation
 			require(['interpreter'], function (interpreter) {
 				interpretCommand(cmd, term);

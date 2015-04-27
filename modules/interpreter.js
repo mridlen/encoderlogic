@@ -47,5 +47,9 @@ function interpretCommand(cmd, term) {
 		like(term);
 	} else if(cmd.split(" ")[0] == 'links') {
 		links(cmd.split(" ")[1], term);
-	}
+	} else if(cmd.split(" ")[0] == 'dir') {
+        $.getJSON( "modules/directory_listing.php", function (dir) {
+            alert(dir[0]);
+        });
+    }
 }

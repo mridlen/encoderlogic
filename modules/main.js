@@ -21,4 +21,3 @@ require(['jquery'], function(jquery) {
 });
 
 
-
