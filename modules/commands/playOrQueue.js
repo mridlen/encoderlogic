@@ -105,7 +105,7 @@ function playOrQueue(arg0, arg1, arg2, term) {
 				playTrack(currentTrack['trackId'], term);
 			} else if (arg0 == 'queue') {
 				//this will display the queue
-				queueTrack(term);
+				getQueue(term);
 			}
 		
 	}

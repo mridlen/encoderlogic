@@ -5,17 +5,6 @@ function queueTrack(track_id, term) {
 		});
 		queue.push(track_id);
 	} else {
-		term.echo("");
-		term.echo("=== " + queue.length + " TRACKS QUEUED ===");
-		term.echo("");
-		
-		
-		for (i = 0; i < queue.length; i++) {
-			queueDisplay(i, queue[i], term);
-		}
-		
-		
-		
-		term.echo("");
-	}
+        console.log("Undefined track_id passed to queueTrack");
+    }
 }
