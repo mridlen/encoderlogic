@@ -15,6 +15,7 @@ function help(term) {
 	term.echo("next - skip current track and play the next song in the queue");
 	term.echo("repeat - turn track repeat on or off using 'repeat on' or 'repeat off' (alternatively use 1 or 0 e.g. 'repeat 1').");
 	term.echo("queue [help] - display the play queue. (search for the track id using the tracks command).");
+	term.echo("debug [on|off] - turn debug mode on or off (for development purposes)");
 	term.echo("login - prompt for user login via soundcloud connect popup (this enables more commands!)");
 	
 	if (loggedIn == 1) {

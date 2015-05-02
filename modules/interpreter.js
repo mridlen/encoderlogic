@@ -51,5 +51,7 @@ function interpretCommand(cmd, term) {
         $.getJSON( "modules/directory_listing.php", function (dir) {
             alert(dir[0]);
         });
-    }
+    } else if(cmd.split(" ")[0] == 'debug') {
+		setDebugMode(cmd, term);
+	}
 }

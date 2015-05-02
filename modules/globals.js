@@ -94,3 +94,6 @@ var searchArtists = [];
 var commentTimestamp = 0;
 var postUrl = "";
 var bodyString = "";
+
+//boolean debugMode - if on it will output things to the console (default off)
+var debugMode = 0;
