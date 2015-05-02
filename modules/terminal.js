@@ -23,8 +23,7 @@ $(function() {
 				//this keeps the user from seeing any unsightly errors that may occur if too quick of a typist
 				//or too slow of an internet connection
 				term.pause();
-				//debugging
-				//console.log(dir);
+
 				for (i = 0; i < dir.length; i++) {
 					require(['commands/' + dir[i]]);
 				}
