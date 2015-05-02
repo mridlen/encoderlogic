@@ -5,14 +5,10 @@ function getNextHref(next_href, term) {
 		//term.echo(tracks.next_href + "&" + soundcloudOAuthToken);
 		
 		moreArray['nextPageURL'] = next_href + "&" + soundcloudOAuthToken;
-		if (debugMode == 1) {
-			console.log("nextPageURL " + moreArray['nextPageURL']);
-		}
+		(debugMode) ? console.log("nextPageURL " + moreArray['nextPageURL']) : 0;
 	} else {
 		moreArray['nextPageURL'] = next_href;
-		if (debugMode == 1) {
-			console.log("nextPageURL " + moreArray['nextPageURL']);
-		}
+		(debugMode) ? console.log("nextPageURL " + moreArray['nextPageURL']) : 0;
 	}
 	
 	//add +1 to the pagination in case "more" is used

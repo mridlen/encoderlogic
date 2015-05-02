@@ -23,7 +23,7 @@ function playTrack(track_id, term) {
 			//stops any currently playing track
 			soundManager.stopAll();
 			
-			console.log("Current position: " + currentTrack['trackPosition']);
+			(debugMode) ? console.log("Current position: " + currentTrack['trackPosition']) : 0;
 			
 			//sound already references the track id when the API function is called, so nothing else to supply it but play()
 			sound.play({
@@ -42,10 +42,6 @@ function playTrack(track_id, term) {
 				}
 			});
 			displayTimedComments(track_id, currentTrack['trackPosition'], term);
-
-			//sound.onfinish(function() {
-			//    term.echo("Song finished playing.");
-			//});
 		});
 	} else {
 		term.echo("Not a valid number.");

@@ -5,6 +5,6 @@ function queueTrack(track_id, term) {
 		});
 		queue.push(track_id);
 	} else {
-        console.log("Undefined track_id passed to queueTrack");
+        (debugMode) ? console.log("Undefined track_id passed to queueTrack") : 0;
     }
 }

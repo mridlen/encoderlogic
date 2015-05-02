@@ -1,7 +1,5 @@
 function formatTracks(theListOfTracks, term) {
-	if (debugMode == 1) {
-		console.log(theListOfTracks);
-	}
+	(debugMode) ? console.log(theListOfTracks) : 0;
 	//output the header
 	term.echo("[[;"+ theme['quickIdColor'] +";]Quick Play ID] [[;"+ theme['trackIdColor'] +";]Track ID] [[;"+ theme['artistIdColor'] +";]Artist] Track");
 	

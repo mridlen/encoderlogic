@@ -75,12 +75,12 @@ function playOrQueue(arg0, arg1, arg2, term) {
 			queueTrack(arg2, term);
 		}
 	} else if (typeof arg1 !== 'undefined') {
-		//term.echo("Using quick play id...");
+		(debugMode) ? console.log("Using quick play id...") : 0;
 		//our safe zone will be 1-trackLimit for quick play numbers (I eventually plan to move this to a variable that can be easily adjusted)
 		//you will be able to supply a track id using syntax "play id <track id>"
 		if(arg1 < trackLimit) {
 			//play the quick play number
-			//term.echo("quick play id supplied: " + (arg1));
+			(debugMode) ? console.log("quick play id supplied: " + (arg1)) : 0;
 			
 			if(arg0 == 'play') {
 				playTrack(searchTracks[(arg1 - 1)], term);
@@ -101,7 +101,7 @@ function playOrQueue(arg0, arg1, arg2, term) {
 			//if this is play, we want to play the stopped track
 			if (arg0 == 'play' && currentTrack['trackId'] !== 0) {
 				term.echo("Playing previously stopped track from beginning.");
-				term.echo("currentTrack['trackId'] == " + currentTrack['trackId']);
+				(debugMode) ? console.log("currentTrack['trackId'] == " + currentTrack['trackId']) : 0;
 				playTrack(currentTrack['trackId'], term);
 			} else if (arg0 == 'queue') {
 				//this will display the queue

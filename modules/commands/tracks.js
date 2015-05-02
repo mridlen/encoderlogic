@@ -29,7 +29,7 @@ function tracks(arg0, arg1, searchString, term) {
 			//clear searchTracks[]
 			searchTracks = [];
 			for (i = 0; i < tracks.length; i++) {
-				//console.log("track: " + tracks[i].title + ", string: " + tracks[i].tag_list.toLowerCase() + ", >> result: " + tracks[i].tag_list.toLowerCase().search(searchString.toLowerCase()));
+				(debugMode) ? console.log("track: " + tracks[i].title + ", string: " + tracks[i].tag_list.toLowerCase() + ", >> result: " + tracks[i].tag_list.toLowerCase().search(searchString.toLowerCase())) : 0;
 				
 				if (tracks[i].title.toLowerCase().search(searchString.toLowerCase()) != -1 || tracks[i].tag_list.toLowerCase().search(searchString.toLowerCase()) != -1 || tracks[i].genre.toLowerCase().search(searchString.toLowerCase()) != -1) {
 					term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" +  tracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + tracks[i].user.username  + "] - " + tracks[i].title);
@@ -51,8 +51,7 @@ function tracks(arg0, arg1, searchString, term) {
 		//hopefully this should echo 1-20, 21-40, 41-60, etc
 		term.echo("Tracks " + ((page_size * (moreArray['page'])) + 1) + "-" + (page_size * (moreArray['page'] + 1)) + ":");
 		
-		//uncomment for debugging
-		//term.echo("tempAPIURL == " + moreArray['tempAPIURL']);
+		(debugMode) ? term.echo("tempAPIURL == " + moreArray['tempAPIURL']) : 0;
 		
 		listTracks(arg0, term);
 	}
