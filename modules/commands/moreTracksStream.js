@@ -6,7 +6,8 @@ function moreTracksStream(term) {
 				id: tracks.collection[i].origin.id,
 				username: tracks.collection[i].origin.user.username,
 				title: tracks.collection[i].origin.title,
-				permalink_url: tracks.collection[i].origin.permalink_url
+				permalink_url: tracks.collection[i].origin.permalink_url,
+				streamable: tracks.collection[i].origin.streamable
 			};
 		}
 		formatTracks(theListOfTracks, term);

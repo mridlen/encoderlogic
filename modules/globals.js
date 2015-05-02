@@ -30,7 +30,10 @@ var page_size = 20;
 var theme = {
     quickIdColor: "cyan",
     trackIdColor: "red",
-    artistIdColor: "yellow"
+    artistIdColor: "yellow",
+	streamableColor: "grey",
+	streamableTrue: "green",
+	streamableFalse: "red"
 }
 
 //more array contains the info needed to use the tracks command and then type "more" for the next page

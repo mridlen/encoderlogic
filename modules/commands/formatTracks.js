@@ -5,7 +5,13 @@ function formatTracks(theListOfTracks, term) {
 	
 	//output the list of tracks
 	for (i = 0; i < page_size; i++) {
-		term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" + theListOfTracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title);
+		streamable = "";
+		if (theListOfTracks[i].streamable == true) {
+			streamable = "[[;" + theme['streamableTrue'] + ";]true]";
+		} else {
+			streamable = "[[;" + theme['streamableFalse'] + ";]false]";
+		}
+		term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" + theListOfTracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title + " - [[;" + theme['streamableColor'] + ";]streamable:] " + streamable );
 		if (showLinks == 1) {
 			term.echo('\tlink:' + theListOfTracks[i].permalink_url);
 		}
