@@ -12,9 +12,9 @@ function formatTracks(theListOfTracks, term) {
 			streamable = "[[;" + theme['streamableFalse'] + ";]false]";
 		}
 		term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" + theListOfTracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title + " - [[;" + theme['streamableColor'] + ";]streamable:] " + streamable );
-		if (showLinks == 1) {
-			term.echo('\tlink:' + theListOfTracks[i].permalink_url);
-		}
+		
+		(showLinks) ? term.echo('\tlink:' + theListOfTracks[i].permalink_url) : 0;
+		
 		searchTracks[i] = theListOfTracks[i].id;
 	}
 }

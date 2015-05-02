@@ -53,5 +53,7 @@ function interpretCommand(cmd, term) {
         });
     } else if(cmd.split(" ")[0] == 'debug') {
 		setDebugMode(cmd, term);
+	} else if(cmd.split(" ")[0] == 'typed') {
+		typed(cmd, term);
 	}
 }

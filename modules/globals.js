@@ -1,7 +1,9 @@
 // initialize client with app credentials
+var client_id = '8c3cf644ea6051b32f5e612143e203e9';
+var redirect_uri = 'http://beta.encoderlogic.com/callback.html';
 SC.initialize({
-  client_id: '8c3cf644ea6051b32f5e612143e203e9',
-  redirect_uri: 'http://beta.encoderlogic.com/callback.html'
+  "client_id": client_id,
+  "redirect_uri": redirect_uri
 });
 //soundcloud user id (this is associated with the artist, not the end user)
 var soundcloudUserId = 14947567;
