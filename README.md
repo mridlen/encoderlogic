@@ -56,4 +56,4 @@ $ curl -v 'http://api.soundcloud.com/resolve.json?url=http://soundcloud.com/enco
 {"status":"302 - Found","location":"https://api.soundcloud.com/users/14947567.json?client_id=8c3cf644ea6051b32f5e612143e203e9"}
 ```
 
-There are also a number of things you will need to modify in the modules/terminal.js to personalize it (e.g. create your own links section, soundcloud and facebook urls, etc), but it should be fairly obvious what you need to change.
+There are also a number of things you will need to modify in the modules to personalize it (e.g. create your own links section, soundcloud and facebook urls, etc), but it should be fairly obvious what you need to change.
