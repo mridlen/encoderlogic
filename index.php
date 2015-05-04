@@ -14,8 +14,9 @@
     <link rel="stylesheet" href="terminal/css/droidsansmono_regular_macroman/stylesheet.css" type="text/css" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="terminal.css" />
     
+    <script src="modules/script.min.js"></script>
     <!-- using modules/main.js to load up all the javascript for this terminal -->
-    <script data-main="modules/main" src="modules/require.js"></script>
+    <script src="modules/main.js"></script>
 	
 </head>
 <body>

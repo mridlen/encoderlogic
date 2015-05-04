@@ -14,9 +14,13 @@ if(is_dir($dir)){
             if($file == "." or $file == ".."){
 
             } else {
+                //we don't need this part now since switching to $script.js
                 //pulls the .js off the end because requirejs needs just the file name not the extension
-                $cropped = implode("", explode(".js", $file));
-                $return_array[] = $cropped; // Add the file to the array
+                //$cropped = implode("", explode(".js", $file));
+                //$return_array[] = $cropped; // Add the file to the array
+                
+                //new way with $script.js
+                $return_array[] = 'modules/commands/' . $file;
             }
         }
     }
