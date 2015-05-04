@@ -10,6 +10,7 @@
     <!--[if IE]>
     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
     <link href="terminal/css/jquery.terminal.css" rel="stylesheet"/>
     <link rel="stylesheet" href="terminal/css/droidsansmono_regular_macroman/stylesheet.css" type="text/css" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="terminal.css" />
