@@ -3,7 +3,7 @@ $(function() {
 	//the commands in the commands directory are now loaded dynamically using the directory_listing.php script
     
     $('#term').terminal(function(cmd, term) {
-        $script.ready(['commands'], function () {
+        $script.ready(['commands', 'interpreter'], function () {
             interpretCommand(cmd, term);
         });
     },{
@@ -14,15 +14,9 @@ $(function() {
         width: 1500,
         height: 768,
         onInit: function (term) {        
-            $script(['modules/interpreter.js']);
             
-            $script.ready('bundle', function () {
-                $.getJSON( 'modules/directory_listing.php', function (dir) {
-                    $script(dir, 'commands');
-                });
-            });
             
-            $script.ready(['globals'], function () {
+            $script.ready(['globals', 'slowTyping'], function () {
                 var msg = 
 '    ______                     __          __                _     \n' +
 '   / ____/___  _________  ____/ /__  _____/ /   ____  ____ _(_)____\n' +
@@ -31,7 +25,7 @@ $(function() {
 '/_____/_/ /_/\\___/\\____/\\__,_/\\___/_/  /_____/\\____/\\__, /_/\\___/  \n' +
 '      <' + soundcloudURL + '>        /____/          \n\n';
                 var msg2 =
-				'            >ENCODER LOGIC _            \n\n' +
+				'            >ENCODER LOGIC _\n\n' +
 				'    ++ Official Terminal Server ++\n\n';
                 
                 var msg3 = 

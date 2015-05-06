@@ -23,7 +23,7 @@ function interpretCommand(cmd, term) {
 		pauseTrack(term);
 	} else if(cmd.split(" ")[0] == 'next') {
 		stopTrack(term);
-		playNextTrack();
+		playNextTrack(term);
 	} else if(cmd.split(" ")[0] == 'repeat') {
 		repeatModify(cmd.split(" ")[1], term);
 	} else if(cmd.split(" ")[0] == 'comment' && loggedIn == 1) {
