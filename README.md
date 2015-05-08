@@ -69,6 +69,7 @@ if(cmd.split(" ")[0] == 'command') {
 		command(cmd, term);
 	}
 ```
+These cmd modules will be compiled in to the interpreter.cmd dynamically.
 
 2) Create a .js file (in this example, command.js) with your command actions in it
 
