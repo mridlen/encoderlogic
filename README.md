@@ -25,7 +25,7 @@ You will need to update the Client ID and Redirect URI, soundcloudUserID and sou
 
 ### Finding your soundcloudUserID
 
-Use this command, replacing "encoder-logic" with the URL of your artist name and the client_id with your client_id from the soundcloud apps page:
+Use this command on your server, replacing "encoder-logic" with the URL of your artist name and the client_id with your client_id from the soundcloud apps page:
 
 (look for: https://api.soundcloud.com/users/##########, THIS IS YOUR USER ID!)
 
@@ -60,9 +60,19 @@ There are also a number of things you will need to modify in the modules to pers
 
 ## Creating your own custom Modules
 
-There are 2 parts to creating your own custom commands
+I have made it intentionally easy to expand or reduce the command functionality. The goal being user created custom plugins.
 
-1) Create a cmd file (in this example, command.cmd) in this format (no spaces before if, 8 spaces before the code, and 4 spaces before the "}"), replacing "command" with your desired command.
+There are 2 parts to creating your own custom commands:
+
+1. Create a cmd file (in this example, command.cmd) in this format:
+
+* no spaces before if
+* 8 spaces before the code
+* 4 spaces before the "}"
+
+This is just to keep the readability of the interpreter.php for troubleshooting purposes.
+
+Replace "command" with your desired command. Passing it cmd and term is typical usage.
 
 ```
 if(cmd.split(" ")[0] == 'command') {
@@ -71,10 +81,12 @@ if(cmd.split(" ")[0] == 'command') {
 ```
 These cmd modules will be compiled in to the interpreter.php dynamically.
 
-2) Create a .js file (in this example, command.js) with your command actions in it
+2. Create a .js file (in this example, command.js) with your command actions in it
 
 ```
 function command(cmd, term) {
 	//your code here
 }
 ```
+
+3. Currently you need to edit the help.js to document your command. I plan to make this modular in the near future.
