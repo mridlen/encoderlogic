@@ -57,3 +57,23 @@ $ curl -v 'http://api.soundcloud.com/resolve.json?url=http://soundcloud.com/enco
 ```
 
 There are also a number of things you will need to modify in the modules to personalize it (e.g. create your own links section, soundcloud and facebook urls, etc), but it should be fairly obvious what you need to change.
+
+## Creating your own custom Modules
+
+There are 2 parts to creating your own custom commands
+
+1) Create a cmd file in this format, replacing "command" with your desired command
+
+```
+if(cmd.split(" ")[0] == 'command') {
+		command(cmd, term);
+	}
+```
+
+2) Create a .js file (in this example, command.js) with your command actions in it
+
+```
+function command(cmd, term) {
+	//your code here
+}
+```
