@@ -62,7 +62,7 @@ There are also a number of things you will need to modify in the modules to pers
 
 There are 2 parts to creating your own custom commands
 
-1) Create a cmd file in this format, replacing "command" with your desired command
+1) Create a cmd file (in this example, command.cmd) in this format, replacing "command" with your desired command
 
 ```
 if(cmd.split(" ")[0] == 'command') {
