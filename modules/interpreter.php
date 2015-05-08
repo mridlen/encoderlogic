@@ -16,6 +16,7 @@ foreach ($files as $file) {
 }
 
 foreach ($files2 as $file) {
+    echo( "/* " . $file . " */\n    " );
 	include(dirname(__FILE__) . $dirname . "/" . $file);
     if (end($files2) !== $file) {
         echo(" else ");
