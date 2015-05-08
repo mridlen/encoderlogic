@@ -48,10 +48,10 @@ function interpretCommand(cmd, term) {
 	} else if(cmd.split(" ")[0] == 'links') {
 		links(cmd.split(" ")[1], term);
 	} else if(cmd.split(" ")[0] == 'dir') {
-        $.getJSON( "modules/directory_listing.php", function (dir) {
-            alert(dir[0]);
-        });
-    } else if(cmd.split(" ")[0] == 'debug') {
+		$.getJSON( "modules/directory_listing.php", function (dir) {
+			alert(dir[0]);
+		});
+	} else if(cmd.split(" ")[0] == 'debug') {
 		setDebugMode(cmd, term);
 	} else if(cmd.split(" ")[0] == 'typed') {
 		typed(cmd, term);
