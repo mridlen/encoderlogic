@@ -3,7 +3,7 @@ $(function() {
 	//the commands in the commands directory are now loaded dynamically using the directory_listing.php script
     
     $('#term').terminal(function(cmd, term) {
-        $script.ready(['commands', 'interpreter'], function () {
+        $script.ready(['commands', 'interpreter', 'soundcloudconnect'], function () {
             interpretCommand(cmd, term);
         });
     },{
@@ -14,8 +14,7 @@ $(function() {
         width: 1500,
         height: 768,
         onInit: function (term) {        
-            
-            
+
             $script.ready(['globals', 'slowTyping'], function () {
                 var msg = 
 '    ______                     __          __                _     \n' +
