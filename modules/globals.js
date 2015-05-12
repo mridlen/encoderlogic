@@ -6,6 +6,9 @@ var redirect_uri = 'http://beta.encoderlogic.com/callback.html';
 var soundcloudUserId = 14947567;
 var soundcloudUserName = "Encoder Logic";
 
+//this stores the permanent user name (for the help menu)
+var soundcloudPermUserName = soundcloudUserName;
+
 //this is used for the "soundcloud" command
 var soundcloudURL = "http://soundcloud.com/encoder-logic";
 
@@ -96,3 +99,6 @@ var bodyString = "";
 
 //boolean debugMode - if on it will output things to the console (default off)
 var debugMode = 0;
+
+//holds all the commands, functions, and help, loaded dynamically from the files in modules/commands
+var commands = [];
