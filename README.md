@@ -62,31 +62,21 @@ There are also a number of things you will need to modify in the modules to pers
 
 I have made it intentionally easy to expand or reduce the command functionality. The goal being user created custom plugins.
 
-There are 2 parts to creating your own custom commands:
+You will need to create a single .js file in the modules/commands directory that looks like this:
 
-1. Create a cmd file (in this example, command.cmd) in this format:
+```javascript
+commands.push({
+    triggers: [
+        {
+            trigger: "yourcommand", //the command typed here
+            alias: { "yc", "yourc", "y" }, //this will be implemented soon (command aliases that will also run your command)
+            help: "yourcommand ............ displays websites, links and information.",
+            requireLoggedIn: false //make this true if it requires them to be logged in
+        }
+    ],
 
-* no spaces before if
-* 8 spaces before the code
-* 4 spaces before the "}"
-
-This is just to keep the readability of the interpreter.php for troubleshooting purposes.
-
-Replace "command" with your desired command. Passing it cmd and term is typical usage.
-
+    fn: function(trigger, term, cmd) { //pass it (trigger, term, cmd) always!
+        //your code here
+    }
+});
 ```
-if(cmd.split(" ")[0] == 'command') {
-		command(cmd, term);
-	}
-```
-These cmd modules will be compiled in to the interpreter.php dynamically.
-
-2. Create a .js file (in this example, command.js) with your command actions in it
-
-```
-function command(cmd, term) {
-	//your code here
-}
-```
-
-3. Currently you need to edit the help.js to document your command. I plan to make this modular in the near future.
