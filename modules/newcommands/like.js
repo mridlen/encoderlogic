@@ -3,7 +3,7 @@ commands.push({
         {
             trigger: "like",
             help: "like ................... like the curretly playing track",
-            requireLoggedIn: false
+            requireLoggedIn: true
         }
     ],
 

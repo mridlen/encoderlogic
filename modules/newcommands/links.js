@@ -16,10 +16,10 @@ commands.push({
 							 'You may turn links back on using the "links on" command. \n\n');
 			term.push(function(command) {
 				if (command.match(/y|yes/i)) {
-					turnLinksOff(term);
+					this.turnLinksOff(term);
 					term.pop();
 				} else if (command.match(/n|no/i)) {
-					turnLinksOn(term);
+					this.turnLinksOn(term);
 					term.pop();
 				}
 			}, {
@@ -35,5 +35,17 @@ commands.push({
 				term.echo("Links: on");
 			}
 		}
+	},
+	
+	turnLinksOff: function (term) {
+		showLinks = 1;
+		page_size = 20;
+		term.echo("Links: on");
+	},
+	
+	turnLinksOff: function (term) {
+		showLinks = 0;
+		page_size = 40;
+		term.echo("Links: off");
 	}
 });
