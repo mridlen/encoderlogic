@@ -70,13 +70,14 @@ commands.push({
         {
             trigger: "yourcommand", //the command typed here
             alias: { "yc", "yourc", "y" }, //this will be implemented soon (command aliases that will also run your command)
-            help: "yourcommand ............ displays websites, links and information.",
+            help: "yourcommand ............ this is the description of your command.",
             requireLoggedIn: false //make this true if it requires them to be logged in
         }
     ],
 
     fn: function(trigger, term, cmd) { //pass it (trigger, term, cmd) always!
         //your code here
+        term.echo("Hello World!");
     }
 });
 ```
