@@ -4,7 +4,7 @@ header('Content-type: application/javascript');
 
 $dirname = '/commands';
 $files = scandir(dirname(__FILE__) . $dirname);
-echo ("//command functions, built using command_functions.php\n\n");
+echo ("//commands object builder, built using command_functions.php\n\n");
 
 $files2 = array();
 

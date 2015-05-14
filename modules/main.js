@@ -1,11 +1,12 @@
 $script(['../terminal/js/jquery-1.7.1.min.js'], 'jquery');
-$script(['modules/interpreter.php'], 'interpreter');
+$script(['modules/interpreter.js'], 'interpreter');
 $script(['http://connect.soundcloud.com/sdk.js'], 'soundcloud');
 $script(['./modules/slowTyping.js'], 'slowTyping');
 $script(['./modules/globals.js'], 'globals');
 
 $script.ready(['soundcloud', 'jquery'], function () {
     $script(['./modules/command_functions.php'], 'commands');
+    $script(['./modules/command_core.php'], 'core');
 });
 
 $script.ready(['jquery'], function () {
