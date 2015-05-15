@@ -17,4 +17,5 @@ function formatTracks(theListOfTracks, term) {
 		
 		searchTracks[i] = theListOfTracks[i].id;
 	}
+    (helpMode) ? term.echo('Type "more" to display more tracks') : 0;
 }

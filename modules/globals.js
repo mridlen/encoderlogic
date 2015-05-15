@@ -101,5 +101,8 @@ var bodyString = "";
 //boolean debugMode - if on it will output things to the console (default off)
 var debugMode = 0;
 
+//boolean helpMode - if on it will output additional help messages to the console (default on)
+var helpMode = 1;
+
 //holds all the commands, functions, and help, loaded dynamically from the files in modules/commands
 var commands = [];
