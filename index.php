@@ -19,10 +19,27 @@
     <!-- using modules/main.js to load up all the javascript for this terminal -->
     <script src="modules/main.js"></script>
 	
+    
+    
 </head>
 <body>
 	<div class="wrapper">
 		<div id="term"></div>
+        <noscript>
+            <div class="terminal">
+                >ENCODER LOGIC_
+            </div>
+            <div class="terminal" style="color:red">
+                Fatal Error:<br /><br /><br />
+                ///////////////////////////////////////////////////////////<br />
+                /Critical Error: Your browser does not support JavaScript!/<br />
+                ///////////////////////////////////////////////////////////<br />
+                <br /><br />
+                //END SCRIPT//>><br />
+                0xDEADBEEF :: lp0 on fire<br />
+                mount: Not a typewriter
+            </div>
+            </noscript>
 	</div>
 </body>
 </html>
