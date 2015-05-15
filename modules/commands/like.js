@@ -8,14 +8,14 @@ commands.push({
     ],
 
 	fn: function (trigger, term, cmd) {
-		term.echo("Liking current track: " + currentTrack['trackId']);
-		SC.put("/me/favorites/" + currentTrack['trackId']);
-		
-		//this part hasn't been fixed yet
-		//SC.get("/user/" + soundcloudUserIdClient + "/favorites/0", function(likes) {
-		//		if(likes.id == currentTrack['trackId']) {
-		//				term.echo("Current track successfully liked.");
-		//		}
-		//});
+		SC.put("/me/favorites/" + currentTrack['trackId'], function(error) {
+            if (error.status = "200 - OK") {
+                term.echo("Liked current track: " + currentTrack['trackArtist'] + " - " + currentTrack['trackName']);
+                (debugMode) ? console.log(error) : 0;
+            } else {
+                term.echo("Error liking track. Error object logged to web console.");
+                console.log(error);
+            }
+        });
 	}
 });
