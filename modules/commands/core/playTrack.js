@@ -29,6 +29,7 @@ function playTrack(track_id, term) {
 			sound.play({
 				position: currentTrack['trackPosition'],
 				onfinish: function() {
+                    currentTrack['trackPosition'] = 0;
 					term.echo("Song finished playing.");
 					if (repeat == 0) {
 						//play next track in queue
@@ -42,6 +43,7 @@ function playTrack(track_id, term) {
 				}
 			});
 			displayTimedComments(track_id, currentTrack['trackPosition'], term);
+            currentTrack['trackStatus'] = "playing";
 		});
 	} else {
 		term.echo("Not a valid number.");

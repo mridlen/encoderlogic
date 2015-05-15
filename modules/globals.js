@@ -77,7 +77,8 @@ var currentTrack = {
     trackName: "",
     trackDuration: 0,
     startedTimestamp: 0,
-    trackPosition: 0
+    trackPosition: 0,
+    trackStatus: "stopped"
 };
 
 //timeoutValue array has the timeouts for all the comments

@@ -9,6 +9,7 @@ commands.push({
 
 	fn: function (trigger, term, cmd) {
 		stopTrack(term);
+        currentTrack['trackStatus'] = "stopped";
 		currentTrack['trackPosition'] = 0;
 	}
 });

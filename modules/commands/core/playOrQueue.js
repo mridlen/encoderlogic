@@ -100,7 +100,11 @@ function playOrQueue(arg0, arg1, arg2, term) {
 	} else if (typeof arg1 === 'undefined') {
 			//if this is play, we want to play the stopped track
 			if (arg0 == 'play' && currentTrack['trackId'] !== 0) {
-				term.echo("Playing previously stopped track from beginning.");
+                if (currentTrack['trackStatus'] == "stopped") {
+                    term.echo("Playing previously stopped track from beginning.");
+                } else if (currentTrack['trackStatus'] == "paused") {
+                    term.echo("Resuming previously paused track.");
+                }
 				(debugMode) ? console.log("currentTrack['trackId'] == " + currentTrack['trackId']) : 0;
 				playTrack(currentTrack['trackId'], term);
 			} else if (arg0 == 'queue') {

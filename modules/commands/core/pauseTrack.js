@@ -7,4 +7,6 @@ function pauseTrack(term) {
 	
 	term.echo("Track paused at " + currentTrack['trackPosition']);
 	stopTrack(term);
+    
+    currentTrack['trackStatus'] = "paused";
 }
