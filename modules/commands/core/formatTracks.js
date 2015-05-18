@@ -5,17 +5,21 @@ function formatTracks(theListOfTracks, term) {
 	
 	//output the list of tracks
 	for (i = 0; i < page_size; i++) {
-		streamable = "";
-		if (theListOfTracks[i].streamable == true) {
-			streamable = "[[;" + theme['streamableTrue'] + ";]true]";
-		} else {
-			streamable = "[[;" + theme['streamableFalse'] + ";]false]";
-		}
-		term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" + theListOfTracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title + " - [[;" + theme['streamableColor'] + ";]streamable:] " + streamable );
-		
-		(showLinks) ? term.echo('\tlink:' + theListOfTracks[i].permalink_url) : 0;
-		
-		searchTracks[i] = theListOfTracks[i].id;
+        //without this check (i < theListOfTracks.length), the script will throw the following error and not display any tracks
+        //Uncaught TypeError: Cannot read property 'id' of undefined
+        if (i < theListOfTracks.length) {
+            streamable = "";
+            if (theListOfTracks[i].streamable == true) {
+                streamable = "[[;" + theme['streamableTrue'] + ";]true]";
+            } else {
+                streamable = "[[;" + theme['streamableFalse'] + ";]false]";
+            }
+            term.echo("[[;"+ theme['quickIdColor'] +";]" + (i+1) + ")] [[;"+ theme['trackIdColor'] +";]" + theListOfTracks[i].id + "] - [[;"+ theme['artistIdColor'] +";]" + theListOfTracks[i].username  + "] - " + theListOfTracks[i].title + " - [[;" + theme['streamableColor'] + ";]streamable:] " + streamable );
+            
+            (showLinks) ? term.echo('\tlink:' + theListOfTracks[i].permalink_url) : 0;
+            
+            searchTracks[i] = theListOfTracks[i].id;
+        }
 	}
     (helpMode) ? term.echo('Type "more" to display more tracks') : 0;
 }
