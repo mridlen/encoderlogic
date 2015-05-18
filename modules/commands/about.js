@@ -2,6 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "about",
+            alias: ["a", "ab", "abo", "abou"],
             help: "about .................. displays websites, links and information.",
             requireLoggedIn: false
         }

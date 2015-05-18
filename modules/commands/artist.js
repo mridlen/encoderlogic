@@ -2,6 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "artist",
+            alias: ["ar", "art", "arti", "artis"],
             help: "artist [help] .......... used for changing the artist page (in case you want some other music than >ENCODER LOGIC_)",
             requireLoggedIn: false
         }

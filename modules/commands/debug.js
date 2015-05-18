@@ -2,6 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "debug",
+            alias: ["d", "de", "deb", "debu"],
             help: "debug [on|off] ......... turn debug mode on or off (for development purposes)",
             requireLoggedIn: false
         }

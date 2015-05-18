@@ -2,6 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "help",
+            alias: ["h", "he", "hel"],
             help: "help [help] ............ displays this menu. (You can also type 'help on', or 'help off')",
             requireLoggedIn: false
         }

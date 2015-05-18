@@ -2,11 +2,13 @@ commands.push({
     triggers: [
         {
             trigger: "follow",
+            alias: ["f", "fo", "fol", "foll", "follo"],
             help: "follow [track] ......... follow the current artist (default: " + soundcloudPermUserName + ") on Soundcloud. (or use 'follow track' to follow the currently playing track)",
             requireLoggedIn: true
         },
         {
             trigger: "unfollow",
+            alias: ["unf", "unfo", "unfol", "unfoll", "unfollo"],
             help: "unfollow [track] ....... unfollow the current artist (default: " + soundcloudPermUserName + ") on Soundcloud. (or use 'unfollow track' to unfollow the currently playing track)",
             requireLoggedIn: true
         }

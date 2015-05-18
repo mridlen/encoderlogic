@@ -2,7 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "tracks",
-            alias: ["t", "tr", "tra", "track"],
+            alias: ["t", "tr", "tra", "trac", "track"],
             help: "tracks [help] .......... display latest uploaded tracks.",
             requireLoggedIn: false
         },

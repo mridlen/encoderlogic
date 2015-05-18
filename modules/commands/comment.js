@@ -2,6 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "comment",
+            alias: ["c", "co", "com", "comm", "comme", "commen"],
             help: "comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).",
             requireLoggedIn: true
         }

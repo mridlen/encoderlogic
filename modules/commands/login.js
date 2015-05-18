@@ -2,6 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "login",
+            alias: ["lo", "log", "logi"],
             help: "login .................. prompt for user login via soundcloud connect popup (this enables more commands!)",
             requireLoggedIn: false
         }

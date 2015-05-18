@@ -1,3 +1,6 @@
+//this runs once when the program starts
+//it verifies that there are no conflicts between the aliases and triggers (this will become more essential if people add new command modules)
+
 commandList = [];
 
 for(i = 0; i < commands.length; i++) {

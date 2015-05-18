@@ -2,6 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "links",
+            alias: ["lin", "link"],
             help: "links [on|off] ......... turn on or off links from the tracks and queue commands. (Doubles page size.)",
             requireLoggedIn: false
         }

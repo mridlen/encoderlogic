@@ -2,6 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "repeat",
+            alias: ["r", "re", "rep", "repe", "repea"],
             help: "repeat ................. turn track repeat on or off using 'repeat on' or 'repeat off' (alternatively use 1 or 0 e.g. 'repeat 1').",
             requireLoggedIn: false
         }
