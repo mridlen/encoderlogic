@@ -17,3 +17,7 @@ $script.ready(['jquery', 'jqueryterminal', 'soundcloud'], function () {
     $script(['./modules/soundcloudInitialize.js'], 'soundcloudconnect');
     $script(['./modules/terminal.js'], 'terminal');
 });
+
+$script.ready(['commands', 'core'], function() {
+    $script(['./modules/verifyUniqueCommands.js']);
+});

@@ -2,24 +2,27 @@ commands.push({
     triggers: [
         {
             trigger: "tracks",
+            alias: ["t", "tr", "tra", "track"],
             help: "tracks [help] .......... display latest uploaded tracks.",
             requireLoggedIn: false
         },
 		{
 			trigger: "stream",
+            alias: ["str", "stre", "strea"],
 			help: "stream ................. display the tracks in your stream",
 			requireLoggedIn: true
 		},
 		{
 			trigger: "more",
+            alias: ["m", "mo", "mor"],
 			help: "more ................... display the next page of tracks (you have to run 'tracks' or 'stream' first, obviously)",
 			requireLoggedIn: false
 		}
     ],
 
 	fn: function (trigger, term, cmd) {
-		if (cmd.split(" ")[0] == 'tracks' || (cmd.split(" ")[0] == 'stream' && loggedIn == 1) || cmd.split(" ")[0] == 'more') {
-			arg0 = cmd.split(" ")[0];
+		if ((trigger.trigger == 'tracks' || trigger.trigger == 'stream' && loggedIn == 1) || trigger.trigger == 'more') {
+			arg0 = trigger.trigger;
 			arg1 = cmd.split(" ")[1];
 			searchString = cmd.split(" search ")[1];
 			//build the API query depending on the command used
