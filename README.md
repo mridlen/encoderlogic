@@ -69,7 +69,7 @@ commands.push({
     triggers: [
         {
             trigger: "yourcommand", //the command typed here
-            alias: { "yc", "yourc", "y" }, //this will be implemented soon (command aliases that will also run your command)
+            alias: [ "yc", "yourc", "y" ], //this will be implemented soon (command aliases that will also run your command)
             help: "yourcommand ............ this is the description of your command.",
             requireLoggedIn: false //make this true if it requires them to be logged in
         }

@@ -12,7 +12,9 @@ function playTrack(track_id, term) {
 			//4) don't impersonate soundcloud
 			SC.get("/tracks/" + track_id, function(track) {
 				term.echo("Now Playing: " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url + " streamable: " + track.streamable);
-				
+				term.echo("Description:");
+                term.echo(track.description);
+                
 				//assign the current track variables so that we can reference this later
 				currentTrack['trackId'] = track.id;
 				currentTrack['trackArtist'] = track.user.username;
