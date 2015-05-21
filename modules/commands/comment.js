@@ -3,7 +3,7 @@ commands.push({
         {
             trigger: "comment",
             alias: ["c", "co", "com", "comm", "comme", "commen"],
-            help: "comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track \n\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).",
+            help: "comment [help] ......... enter a timed comment on the currently playing track",
             requireLoggedIn: true
         }
     ],
@@ -14,6 +14,9 @@ commands.push({
             term.echo("syntax:");
             term.echo("comment This track is awesome!!");
             term.echo("Note: do not enclose your comment in quotes unless you are quoting somebody or for purposes of irony");
+            term.echo("");
+            term.echo("comment Hey great track bro, check out my jams :D - enter a timed comment on the currently playing track");
+            term.echo("\t(don't use quotes unless quoting, and no I will not check out your jams if you ask like that...).");
             term.echo("");
         } else if (currentTrack['trackId'] != 0) {
             term.echo("comment: " + cmd.substring(8));

@@ -18,10 +18,15 @@ commands.push({
                         soundcloudUserName = user.username;
                     });
                     //this call sets the oauth_token for the logged in user (needed for accessing the soundcloud stream)
-                    SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 1, linked_partitioning: 1}, function(tracks) {
-                        (debugMode) ? console.log("tracks next_href: " + tracks.next_href) : 0;
-                        (debugMode) ? console.log("split on &: " + tracks.next_href.split("&")[3]) : 0;
-                        soundcloudOAuthToken = tracks.next_href.split("&")[3];
+                    SC.get("/users/" + soundcloudUserId + "/tracks", {limit: 1, linked_partitioning: 1}, function(tracks, error) {
+                        if(!error) {
+                            (debugMode) ? console.log(tracks) : 0;
+                            (debugMode) ? console.log("tracks next_href: " + tracks.next_href) : 0;
+                            (debugMode) ? console.log("split on &: " + tracks.next_href.split("&")[3]) : 0;
+                            soundcloudOAuthToken = tracks.next_href.split("&")[3];
+                        } else {
+                            console.log(error);
+                        }
                     });
                     //echo the Username, and then set the Username
                     term.echo("User: " + me.username);

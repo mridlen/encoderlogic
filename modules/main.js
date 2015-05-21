@@ -14,7 +14,7 @@ $script.ready(['jquery'], function () {
     $script(['../terminal/js/jquery.terminal-min.js'], 'jqueryterminal');
 });
 
-$script.ready(['jquery', 'jqueryterminal', 'soundcloud'], function () {
+$script.ready(['environment', 'globals', 'jquery', 'jqueryterminal', 'soundcloud'], function () {
     $script(['./modules/soundcloudInitialize.js'], 'soundcloudconnect');
     $script(['./modules/terminal.js'], 'terminal');
 });
