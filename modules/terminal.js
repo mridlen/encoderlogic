@@ -15,7 +15,7 @@ $(function() {
         height: 768,
         onInit: function (term) {        
 
-            $script.ready(['globals', 'slowTyping'], function () {
+            $script.ready(['environment', 'globals', 'slowTyping'], function () {
                 var msg = 
 '    ______                     __          __                _     \n' +
 '   / ____/___  _________  ____/ /__  _____/ /   ____  ____ _(_)____\n' +

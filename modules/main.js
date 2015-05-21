@@ -2,6 +2,7 @@ $script(['../terminal/js/jquery-1.7.1.min.js'], 'jquery');
 $script(['modules/interpreter.js'], 'interpreter');
 $script(['http://connect.soundcloud.com/sdk.js'], 'soundcloud');
 $script(['./modules/slowTyping.js'], 'slowTyping');
+$script(['./modules/environment.js'], 'environment');
 $script(['./modules/globals.js'], 'globals');
 
 $script.ready(['soundcloud', 'jquery'], function () {
