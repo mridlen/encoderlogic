@@ -1,10 +1,10 @@
 function stopTrack(term){
 	term.echo("Stopping track.");
 	
-	//stop all timed comments
-	for (i = 0; i < timeoutValue.length; i++)
+	//stop all timed comments (had to switch from i to stopI due to a for loop collision :-P)
+	for (stopI = 0; stopI < timeoutValue.length; stopI++)
 	{
-		clearTimeout(timeoutValue[i]);
+		clearTimeout(timeoutValue[stopI]);
 	}
 	timeoutValue = [];
 	//stop all sounds playing using soundManager (soundcloud uses this)

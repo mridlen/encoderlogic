@@ -2,7 +2,7 @@ commands.push({
     triggers: [
         {
             trigger: "play",
-            trigger: ["p", "pl", "pla"],
+            alias: ["p", "pl", "pla"],
             help: "play [help] ............ play a track (search for the track id using the tracks command).",
             requireLoggedIn: false
         }

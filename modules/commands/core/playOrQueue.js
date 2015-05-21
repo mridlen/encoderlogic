@@ -1,4 +1,5 @@
 function playOrQueue(arg0, arg1, arg2, term) {
+    (debugMode) ? console.log("PlayOrQueue arguments: " + arg0 + " " + arg1 + " " + arg2) : 0;
 	if (arg0 == 'queue' && arg1 == 'clear') {
 		//"queue clear" command...
 		//clear out the queue array
@@ -74,6 +75,25 @@ function playOrQueue(arg0, arg1, arg2, term) {
 		} else if (arg0 == 'queue') {
 			queueTrack(arg2, term);
 		}
+    } else if (arg1 == 'all') {
+        if (arg0 == 'play') {
+            //play the first track
+            playTrack(searchTracks[0], term);
+            
+            //queue the rest of the tracks
+            for (i = 1; i < page_size; i++) {
+                if (i < searchTracks.length) {
+                    queueTrack(searchTracks[i], term);
+                }
+            }
+        } else if (arg0 == 'queue') {
+            //queue the list of tracks
+            for (i = 0; i < page_size; i++) {
+                if (i < searchTracks.length) {
+                    queueTrack(searchTracks[i], term);
+                }
+            }
+        }
 	} else if (typeof arg1 !== 'undefined') {
 		(debugMode) ? console.log("Using quick play id...") : 0;
 		//our safe zone will be 1-trackLimit for quick play numbers (I eventually plan to move this to a variable that can be easily adjusted)

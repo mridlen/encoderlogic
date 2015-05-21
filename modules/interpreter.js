@@ -23,16 +23,17 @@ function interpretCommand(cmd, term) {
             
             //compare cmd and the trigger
             if(cmd.split(" ")[0] == trigger.trigger) {
+                (debugMode) ? console.log("trigger matched: " + trigger.trigger) : 0;
 				runCommand(trigger, term, cmd);
             }
             
             //compare cmd and the trigger aliases
             if (typeof trigger.alias != "undefined") {
-                (debugMode) ? console.log(trigger.alias) : 0;
+                //(debugMode) ? console.log(trigger.alias) : 0; //this was too noisy for the debug mode
                 trigger.alias.forEach( function (alias) {
-                    (debugMode) ? console.log(alias) : 0;
+                    //(debugMode) ? console.log(alias) : 0; //this was too noisy for the debug mode
                     if(cmd.split(" ")[0] == alias) {
-                        (debugMode) ? console.log("alias matched: " + alias) : 0;
+                        (debugMode) ? console.log("alias matched: " + alias) : 0; //this was too noisy
                         runCommand(trigger, term, cmd);
                     }
                 });

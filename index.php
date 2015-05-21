@@ -14,6 +14,7 @@
     <link href="terminal/css/jquery.terminal.css" rel="stylesheet"/>
     <link rel="stylesheet" href="terminal/css/droidsansmono_regular_macroman/stylesheet.css" type="text/css" charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="terminal.css" />
+    <link rel="stylesheet" type="text/css" href="crt.css" />
     
     <script src="modules/script.min.js"></script>
     <!-- using modules/main.js to load up all the javascript for this terminal -->
@@ -24,12 +25,12 @@
 </head>
 <body>
 	<div class="wrapper">
-		<div id="term"></div>
+		<div class="screen"><div id="term"></div></div>
         <noscript>
-            <div class="terminal">
+            <div class="terminal container screen">
                 >ENCODER LOGIC_
             </div>
-            <div class="terminal" style="color:red">
+            <div class="terminal container screen" style="color:red">
                 Fatal Error:<br /><br /><br />
                 ///////////////////////////////////////////////////////////<br />
                 /Critical Error: Your browser does not support JavaScript!/<br />
