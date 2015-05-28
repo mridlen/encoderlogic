@@ -20,5 +20,5 @@ $script.ready(['environment', 'globals', 'jquery', 'jqueryterminal', 'soundcloud
 });
 
 $script.ready(['commands', 'core'], function() {
-    $script(['./modules/verifyUniqueCommands.js']);
+    $script(['./modules/verifyUniqueCommands.js'], 'verifyunique');
 });
