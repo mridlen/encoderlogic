@@ -54,7 +54,8 @@ commands.push({
                     for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
                         term.echo(followers.collection[iMyYour].id + " - " + followers.collection[iMyYour].username + " - " + followers.collection[iMyYour].permalink_url);
                     }
-                    
+                    moreArray['tempAPIURL'] = "followers";
+                    moreArray['nextPageURL'] = followers.next_href;
                 } else {
                     console.log(error);
                 }
@@ -69,7 +70,8 @@ commands.push({
                     for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
                         term.echo(followings.collection[iMyYour].id + " - " + followings.collection[iMyYour].username + " - " + followings.collection[iMyYour].permalink_url);
                     }
-                    
+                    moreArray['tempAPIURL'] = "followings";
+                    moreArray['nextPageURL'] = followings.next_href;
                 } else {
                     console.log(error);
                 }
@@ -78,12 +80,37 @@ commands.push({
         
         function myYourLikes (trigger, term, cmd, tempUserId) {
             term.echo(trigger.trigger + "likes");
+            SC.get("/users/" + tempUserId + "/favorites", {limit: page_size, linked_partitioning: 1}, function (favorites, error) {
+                if (!error) {
+                    console.log(favorites);
+                    for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
+                        term.echo(favorites.collection[iMyYour].id + " - " + favorites.collection[iMyYour].user.username + " - " + favorites.collection[iMyYour].title + " - " + favorites.collection[iMyYour].permalink_url);
+                    }
+                    moreArray['tempAPIURL'] = "favorites";
+                    moreArray['nextPageURL'] = favorites.next_href;
+                } else {
+                    console.log(error);
+                }
+            });
         }
         
         function myYourProfile (trigger, term, cmd, tempUserId) {
             term.echo(trigger.trigger + "profile");
+            SC.get("/users/" + tempUserId, function (user, error) {
+                term.echo("ID: " + user.id);
+                term.echo("Username: " + user.username);
+                term.echo("Full Name: " + user.full_name);
+                term.echo("City: " + user.city);
+                term.echo("Follower Count: " + user.followers_count);
+                term.echo("Followings Count: " + user.followings_count);
+                term.echo("Description: " + user.description);
+                term.echo("Logo: " + user.avatar_url);
+            });
         }
         
+        if(cmd.split(" ")[1] != "help") {
+            moreArray['page'] = 1;
+        }
         if(trigger.trigger == "my") {
             term.echo("my");
             if(cmd.split(" ")[1] == "help") {

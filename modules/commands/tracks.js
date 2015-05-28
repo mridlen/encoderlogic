@@ -70,16 +70,37 @@ commands.push({
 			} else { //this is 
 				//if the more command is not used, reset the pagination value to 0 (start over with the pagination)
 				if (arg0 != 'more') {
-					term.echo("First page");
 					moreArray['page'] = 0;
 				}
 				
 				//hopefully this should echo 1-20, 21-40, 41-60, etc
-				term.echo("Tracks " + ((page_size * (moreArray['page'])) + 1) + "-" + (page_size * (moreArray['page'] + 1)) + ":");
+				term.echo("Items " + ((page_size * (moreArray['page'])) + 1) + "-" + (page_size * (moreArray['page'] + 1)) + ":");
 				
 				(debugMode) ? term.echo("tempAPIURL == " + moreArray['tempAPIURL']) : 0;
-				
-				listTracks(arg0, term);
+				if ((moreArray['tempAPIURL'] == "/users/" + soundcloudUserId + "/tracks") || (moreArray['tempAPIURL'] == "/me/activities/tracks/affiliated")) {
+                    listTracks(arg0, term);
+                } else if (moreArray['tempAPIURL'] == "followers" || moreArray['tempAPIURL'] == "followings") {
+                    console.log(moreArray['nextPageURL']);
+                    $.getJSON(moreArray['nextPageURL'], function( followings ) {
+                            console.log(followings);
+                            for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
+                                term.echo(followings.collection[iMyYour].id + " - " + followings.collection[iMyYour].username + " - " + followings.collection[iMyYour].permalink_url);
+                            }
+                            moreArray['tempAPIURL'] = "followings";
+                            moreArray['nextPageURL'] = followings.next_href;
+                            moreArray['page']++;
+                    });
+                } else if (moreArray['tempAPIURL'] == "favorites") {
+                    $.getJSON(moreArray['nextPageURL'], function( favorites ) {
+                            console.log(favorites);
+                            for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
+                                term.echo(favorites.collection[iMyYour].id + " - " + favorites.collection[iMyYour].user.username + " - " + favorites.collection[iMyYour].title + " - " + favorites.collection[iMyYour].permalink_url);
+                            }
+                            moreArray['tempAPIURL'] = "favorites";
+                            moreArray['nextPageURL'] = favorites.next_href;
+                            moreArray['page']++;
+                    });
+                }
 			}
 		}
 	}
