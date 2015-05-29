@@ -84,7 +84,9 @@ commands.push({
                     $.getJSON(moreArray['nextPageURL'], function( followings ) {
                             console.log(followings);
                             for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
-                                term.echo(followings.collection[iMyYour].id + " - " + followings.collection[iMyYour].username + " - " + followings.collection[iMyYour].permalink_url);
+                                if(typeof followings.collection[iMyYour] != "undefined") {
+                                    term.echo(followings.collection[iMyYour].id + " - " + followings.collection[iMyYour].username + " - " + followings.collection[iMyYour].permalink_url);
+                                }
                             }
                             moreArray['tempAPIURL'] = "followings";
                             moreArray['nextPageURL'] = followings.next_href;
@@ -94,7 +96,9 @@ commands.push({
                     $.getJSON(moreArray['nextPageURL'], function( favorites ) {
                             console.log(favorites);
                             for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
-                                term.echo(favorites.collection[iMyYour].id + " - " + favorites.collection[iMyYour].user.username + " - " + favorites.collection[iMyYour].title + " - " + favorites.collection[iMyYour].permalink_url);
+                                if(typeof favorites.collection[iMyYour] != "undefined") {
+                                    term.echo(favorites.collection[iMyYour].id + " - " + favorites.collection[iMyYour].user.username + " - " + favorites.collection[iMyYour].title + " - " + favorites.collection[iMyYour].permalink_url);
+                                }
                             }
                             moreArray['tempAPIURL'] = "favorites";
                             moreArray['nextPageURL'] = favorites.next_href;
