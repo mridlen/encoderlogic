@@ -26,7 +26,12 @@ function playTrack(track_id, term) {
 			soundManager.stopAll();
 			
 			(debugMode) ? console.log("Current position: " + currentTrack['trackPosition']) : 0;
-			
+            
+            //if someone skipped back too far in the track, this will start it from the beginning...
+			if (currentTrack['trackPosition'] < 0) {
+                currentTrack['trackPosition'] = 0;
+            }
+            
 			//sound already references the track id when the API function is called, so nothing else to supply it but play()
 			sound.play({
 				position: currentTrack['trackPosition'],
