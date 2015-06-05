@@ -9,8 +9,8 @@ function queueDisplay(queue_id, track_id, term) {
 			//I can potentially imagine a situation where one of the SC.get calls does not come back in time though, but it should work *most* of the time
 			//not really mission critical for it to display correctly 100% of the time
 			if(queue_id == (queue.length - 1)) {
-				for (i = 0; i < queue.length; i++) {
-					term.echo(queueStrings[i]);
+				for (queueDisplayI = 0; queueDisplayI < queue.length; queueDisplayI++) {
+					term.echo(queueStrings[queueDisplayI]);
 				}
 			}
 		});

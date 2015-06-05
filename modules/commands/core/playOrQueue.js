@@ -95,7 +95,7 @@ function playOrQueue(arg0, arg1, arg2, term) {
             }
         }
 	} else if (typeof arg1 !== 'undefined') {
-		(debugMode) ? console.log("Using quick play id...") : 0;
+		(debugMode) ? console.log("Arg1 not empty. Using quick play ID. Command: " + arg0) : 0;
 		//our safe zone will be 1-trackLimit for quick play numbers (I eventually plan to move this to a variable that can be easily adjusted)
 		//you will be able to supply a track id using syntax "play id <track id>"
 		if(arg1 < trackLimit) {
@@ -118,8 +118,10 @@ function playOrQueue(arg0, arg1, arg2, term) {
 			}
 		}
 	} else if (typeof arg1 === 'undefined') {
+        (debugMode) ? console.log("Arg1 undefined. Either Playing stopped track or displaying the queue, depending on Arg0: " + arg0) : 0;
 			//if this is play, we want to play the stopped track
 			if (arg0 == 'play' && currentTrack['trackId'] !== 0) {
+                (debugMode) ? console.log("Arg1 undefined, arg0 = play") : 0;
                 if (currentTrack['trackStatus'] == "stopped") {
                     term.echo("Playing previously stopped track from beginning.");
                 } else if (currentTrack['trackStatus'] == "paused") {
@@ -128,6 +130,7 @@ function playOrQueue(arg0, arg1, arg2, term) {
 				(debugMode) ? console.log("currentTrack['trackId'] == " + currentTrack['trackId']) : 0;
 				playTrack(currentTrack['trackId'], term);
 			} else if (arg0 == 'queue') {
+                (debugMode) ? console.log("Arg1 undefined, arg0 = queue") : 0;
 				//this will display the queue
 				getQueue(term);
 			}
