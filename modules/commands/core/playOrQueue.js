@@ -129,6 +129,19 @@ function playOrQueue(arg0, arg1, arg2, term) {
                 }
 				(debugMode) ? console.log("currentTrack['trackId'] == " + currentTrack['trackId']) : 0;
 				playTrack(currentTrack['trackId'], term);
+            } else if (arg0 == 'play' && currentTrack['trackId'] == 0 && typeof queue[0] != 'undefined') {
+                //play with no arguments
+                //there is no currently playing track
+                //there is at least one track in the queue
+                (debugMode) ? console.log("Play has no arguments. There is no currently playing track. There is at least one track in the queue. Playing first track in queue.") : 0;
+                
+                //play the track
+                playTrack(queue[0], term);
+                
+                //remove the first track from the queue
+                //remove starting at element 0, remove 1 element (element 0)
+                queue.splice(0, 1);
+                queueStrings.splice(0, 1);
 			} else if (arg0 == 'queue') {
                 (debugMode) ? console.log("Arg1 undefined, arg0 = queue") : 0;
 				//this will display the queue
