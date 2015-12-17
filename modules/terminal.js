@@ -28,9 +28,10 @@ $(function() {
 				'    ++ Official Terminal Server ++\n\n';
                 
                 var msg3 = 
-				'Command Interface: version 1.5\n\n' +
+				'Command Interface: version 1.6\n\n' +
 				'Type "help" for commands or type "soundcloud" to skip directly to the music.\n' +
-				'Type "login" to connect with soundcloud (this enables more commands!)\n\n';
+				'Type "login" to connect with soundcloud (this enables more commands!)\n\n' +
+				'###!//>  NEW IN VERSION 1.6: Ten Forward command. Type "ten forward" to queue up the new album.\n\n';
                 
                 typed_message(term, msg, 1, function () {
                     typed_message(term, msg2, 50, function() {
