@@ -3,9 +3,12 @@ $(function() {
 	//the commands in the commands directory are now loaded dynamically using the directory_listing.php script
     
     $('#term').terminal(function(cmd, term) {
-        $script.ready(['core', 'commands', 'interpreter', 'soundcloudconnect', 'verifyunique'], function () {
+        try {
             interpretCommand(cmd, term);
-        });
+        } catch (e) {
+            term.error("[ERROR] " + e.message);
+            console.error(e);
+        }
     },{
         prompt: '[anonymous@Encoder Logic]>',
         greetings: '',

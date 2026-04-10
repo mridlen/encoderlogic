@@ -14,7 +14,7 @@ function playTrack(track_id, term) {
 				term.echo("Now Playing: " + track.user.username + " - " + track.title + "\n\tlink: " + track.permalink_url + " streamable: " + track.streamable);
 				term.echo("Description:");
                 term.echo(track.description);
-                
+
 				//assign the current track variables so that we can reference this later
 				currentTrack['trackId'] = track.id;
 				currentTrack['trackArtist'] = track.user.username;
@@ -24,14 +24,14 @@ function playTrack(track_id, term) {
 			});
 			//stops any currently playing track
 			soundManager.stopAll();
-			
+
 			(debugMode) ? console.log("Current position: " + currentTrack['trackPosition']) : 0;
-            
+
             //if someone skipped back too far in the track, this will start it from the beginning...
 			if (currentTrack['trackPosition'] < 0) {
                 currentTrack['trackPosition'] = 0;
             }
-            
+
 			//sound already references the track id when the API function is called, so nothing else to supply it but play()
 			sound.play({
 				position: currentTrack['trackPosition'],
@@ -40,7 +40,7 @@ function playTrack(track_id, term) {
 					term.echo("Song finished playing.");
 					if (repeat == 0) {
 						//play next track in queue
-						if (queue.length > 0) {	
+						if (queue.length > 0) {
 							playNextTrack(term);
 						}
 					} else {

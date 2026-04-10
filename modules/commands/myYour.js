@@ -47,12 +47,17 @@ commands.push({
         }
         
         function myYourFollowers (trigger, term, cmd, tempUserId) {
-            term.echo(trigger.trigger + "followers");
+            term.echo(trigger.trigger + " followers");
             SC.get("/users/" + tempUserId + "/followers", {limit: page_size, linked_partitioning: 1}, function (followers, error) {
                 if (!error) {
                     console.log(followers);
-                    for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
-                        term.echo(followers.collection[iMyYour].id + " - " + followers.collection[iMyYour].username + " - " + followers.collection[iMyYour].permalink_url);
+                    if (!followers.collection || followers.collection.length === 0) {
+                        term.echo("(no followers to display)");
+                    } else {
+                        //bounds-check against collection length to avoid undefined access
+                        for(iMyYour = 0; iMyYour < page_size && iMyYour < followers.collection.length; iMyYour++) {
+                            term.echo(followers.collection[iMyYour].id + " - " + followers.collection[iMyYour].username + " - " + followers.collection[iMyYour].permalink_url);
+                        }
                     }
                     moreArray['tempAPIURL'] = "followers";
                     moreArray['nextPageURL'] = followers.next_href;
@@ -61,14 +66,19 @@ commands.push({
                 }
             });
         }
-        
+
         function myYourFollowings (trigger, term, cmd, tempUserId) {
-            term.echo(trigger.trigger + "followings");
+            term.echo(trigger.trigger + " followings");
             SC.get("/users/" + tempUserId + "/followings", {limit: page_size, linked_partitioning: 1}, function (followings, error) {
                 if (!error) {
                     console.log(followings);
-                    for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
-                        term.echo(followings.collection[iMyYour].id + " - " + followings.collection[iMyYour].username + " - " + followings.collection[iMyYour].permalink_url);
+                    if (!followings.collection || followings.collection.length === 0) {
+                        term.echo("(no followings to display)");
+                    } else {
+                        //bounds-check against collection length to avoid undefined access
+                        for(iMyYour = 0; iMyYour < page_size && iMyYour < followings.collection.length; iMyYour++) {
+                            term.echo(followings.collection[iMyYour].id + " - " + followings.collection[iMyYour].username + " - " + followings.collection[iMyYour].permalink_url);
+                        }
                     }
                     moreArray['tempAPIURL'] = "followings";
                     moreArray['nextPageURL'] = followings.next_href;
@@ -77,14 +87,19 @@ commands.push({
                 }
             });
         }
-        
+
         function myYourLikes (trigger, term, cmd, tempUserId) {
-            term.echo(trigger.trigger + "likes");
+            term.echo(trigger.trigger + " likes");
             SC.get("/users/" + tempUserId + "/favorites", {limit: page_size, linked_partitioning: 1}, function (favorites, error) {
                 if (!error) {
                     console.log(favorites);
-                    for(iMyYour = 0; iMyYour < page_size; iMyYour++) {
-                        term.echo(favorites.collection[iMyYour].id + " - " + favorites.collection[iMyYour].user.username + " - " + favorites.collection[iMyYour].title + " - " + favorites.collection[iMyYour].permalink_url);
+                    if (!favorites.collection || favorites.collection.length === 0) {
+                        term.echo("(no likes to display)");
+                    } else {
+                        //bounds-check against collection length to avoid undefined access
+                        for(iMyYour = 0; iMyYour < page_size && iMyYour < favorites.collection.length; iMyYour++) {
+                            term.echo(favorites.collection[iMyYour].id + " - " + favorites.collection[iMyYour].user.username + " - " + favorites.collection[iMyYour].title + " - " + favorites.collection[iMyYour].permalink_url);
+                        }
                     }
                     moreArray['tempAPIURL'] = "favorites";
                     moreArray['nextPageURL'] = favorites.next_href;
